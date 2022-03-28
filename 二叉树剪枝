@@ -1,0 +1,16 @@
+TreeNode* pruneTree(TreeNode* root) {
+        //如果根节点为空 直接返回根节点
+        if(root == nullptr) return nullptr;
+
+
+        //如果根节点不为空 使用后序遍历
+        root->left = pruneTree(root->left);
+        root->right = pruneTree(root->right);
+        //如果当前节点没有左右子树 且当前节点为0 可以删除
+        if(root->val == 0 && root->left == nullptr && root->right == nullptr){
+            root = nullptr;
+        }
+
+
+        return root;
+    }
