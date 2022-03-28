@@ -1,3 +1,7 @@
+注意:
+1.timePoint要标注为排序后的vector[0][1]
+2.res初始值为1 因为最少也有1个
+
 template<class T>
     struct Cmp{
         bool operator()(const T& s1, const T& s2){
