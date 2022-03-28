@@ -1,0 +1,52 @@
+注意：
+1.要用强制数据类型转换(double) 否则结果会默认是 int 强制返回时才是double (1 + 2) / 2 = 1---->1.000000
+2.要分清if else if 和 else的关系
+        
+class MedianFinder {
+public:
+    /** initialize your data structure here. */
+    MedianFinder() {
+        
+    }
+
+    //小根堆
+    priority_queue<int, vector<int>, greater<int>> pq1; 
+    //大根堆
+    priority_queue<int> pq2;
+
+    void addNum(int num) {
+        //第一个数直接进大根堆
+        if(pq1.size() == 0 && pq2.size() == 0){
+            pq2.push(num);
+        }
+        //如果当前压入的数小于等于大根堆堆顶 压入大根堆 否则压入小根堆
+        else if(num <= pq2.top()){
+            pq2.push(num);
+        }
+        else{
+            pq1.push(num);
+        }
+        
+
+        //如果大根堆和小根堆的size()差来到了2 那么将多的那个的堆顶弹出压入少的
+        if(pq2.size() - pq1.size() == 2){
+            pq1.push(pq2.top());
+            pq2.pop();
+        }
+        
+        if(pq1.size() - pq2.size() == 2){
+            pq2.push(pq1.top());
+            pq1.pop();
+        }
+    }
+    
+    double findMedian() {
+        //长度为偶数 返回 大根堆堆顶和小根堆堆顶和的平均值
+        if((pq2.size() + pq1.size()) % 2 == 0){
+            return (double)(pq2.top() + pq1.top()) / 2;
+        }
+        
+        //长度为奇数 返回size()较大的堆顶 
+        return pq2.size() > pq1.size() ?  pq2.top() : pq1.top();
+    }
+};
