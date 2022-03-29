@@ -1,0 +1,59 @@
+#include<iostream> 
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//N皇后问题 返回有多少种可行的解
+int process(vector<int>& record, int i, int n);
+bool isValid(vector<int>& record, int i, int j);
+int NQueens(int n) {
+	vector<int> record(n);
+
+	return process(record, 0, n);
+}
+
+//record记录每一行的皇后放在了哪一列
+//i表示当前来到了哪一行
+//n表示棋盘有多大
+int process(vector<int>& record, int i, int n) {
+	//来到了终止行 即棋盘最后一行的下一行 说明找到了一种可行的方法
+	if (i == n) return 1;
+
+	//当前来到了第i行
+	int res = 0;
+	for (int j = 0; j < n; j++) {
+		if (isValid(record, i, j)) {
+			record[i] = j;
+			res += process(record, i + 1, n);
+		}
+	}
+
+	return res;
+}
+
+//判断位置是否有效
+//之前放置皇后的记录为record
+//当前来到了第i行
+//将第i行的皇后放在了第j列
+//判断是否有效
+bool isValid(vector<int>& record, int i, int j) {
+	//当前来到第i行 遍历0到i行的位置 看是否有效
+	for (int k = 0; k < i; k++) {
+		//有2种情况不合法:
+		//1.共列 2.共斜线
+		//共斜线通过斜率为45或135度这件事描述
+		if (record[k] == j || (abs(record[k] - j) == i - k)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
+int main() {
+	cout << NQueens(8) << endl;
+	system("pause");
+	return 0;
+}
