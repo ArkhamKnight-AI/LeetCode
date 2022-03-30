@@ -1,0 +1,37 @@
+注意：
+1.要将字符串恢复为原来的样子
+2.vector的去重方法: sort() + unique()
+
+class Solution {
+public:
+    vector<string> permutation(string s) {
+        if(s.size() < 1) return {};
+        vector<string> res;
+        process(s, 0, res);
+        sort(res.begin(), res.end());
+        res.erase(unique(res.begin(), res.end()), res.end());
+        return res;
+    }
+
+    //str中承载了到0~i-1位置的信息 将结果放入res中
+    void process(string s, int i, vector<string>& res){
+        //当前位置 来到字符串最后一个位置 说明生成了一种方法 加入结果中
+        if(i == s.size()){
+            res.push_back(s);
+        }
+
+        for(int j = i; j < s.size(); j++){
+            //交换i和j的位置 生成1种方法
+            swap(s, i, j);
+            process(s, i + 1, res);
+            //恢复为原来的字符串
+            swap(s, i, j);
+        }
+    }
+
+    void swap(string& s, int i, int j){
+        char temp = s[i];
+        s[i] = s[j];
+        s[j] = temp;
+    }
+};
