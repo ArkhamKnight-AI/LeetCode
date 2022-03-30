@@ -1,0 +1,62 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+
+//递归过程 当前来到i位置
+void process1(string s, int i) {
+	if (i == s.size()) {
+		cout << s << " ";
+		return;
+	}
+
+	char temp = s[i];
+	//要i位置的字符
+	process1(s, i + 1);
+	//不要i位置的字符
+	s[i] = 0;
+	process1(s, i + 1);
+	//把原来的字符换回去
+	s[i] = temp;
+}
+
+string copyString(string s);
+void process2(string s, int i, string& res) {
+	//来到字符串最后一个位置 打印
+	if (i == s.size()) {
+		cout << res << " ";
+		return;
+	}
+
+	string resInclude = res;
+	resInclude += s[i];
+	process2(s, i + 1, resInclude);
+	string resNoInclude = res;
+	process2(s, i + 1, resNoInclude);
+}
+
+string copyString(string s) {
+	string str;
+	for (int i = 0; i < s.size(); i++) {
+		str[i] = s[i];
+	}
+
+	return str;
+}
+
+//打印一个字符串所有的子字符串
+void printSub(string s) {
+	if (s.size() < 1) return;
+
+	//process1(s, 0);
+	string res = "";
+	process2(s, 0, res);
+}
+
+
+int main(void) {
+	string s = "abcde";
+	printSub(s);
+	system("pause");
+	return 0;
+}
