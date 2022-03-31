@@ -1,0 +1,56 @@
+注意:
+因为是字符串的1~9 所以在34行的地方要注意这个字符的取值范围在'0'和'6'的ASCII码中间
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+//数字转换为字符串 当前来到i位置 返回有多少种转换字符串的方法
+int process(string& s, int i) {
+	//当i来到字符串的终止位置 说明找到了1种方法
+	if (i == s.size()) return 1;
+
+	//当前字符为0 没有转换方法
+	if (s[i] == '0') return 0;
+
+	//如果当前字符是1 那么有两种情况 
+	if (s[i] == '1') {
+		//一种是将1单独认为是一种 i + 1往后做选择
+		int res = process(s, i + 1);
+
+		//另一种是将1和后面的数字字符认为是一组
+		if (i + 1 < s.size()) {
+			res += process(s, i + 2);
+		}
+		return res;
+	}
+
+	//如果当前字符是2 那么有两种情况
+	if (s[i] == '2') {
+		//一种是将2单独 认为是一种 i+1往后继续做选择
+		int res = process(s, i + 1);
+
+		//另一种是将2和后面位置的数字认为是一个数 但是要求这个数要大于等于0 小于等于6
+		if ((s[i] >= '0' && s[i] <= '6') && i + 1 < s.size()) {
+			res += process(s, i + 2);
+		}
+
+		return res;
+	}
+
+	//以3~9结尾的情况 只存在将i位置单独认为是一个字符的可能性
+	return process(s, i + 1);
+}
+
+int convertNum2String(string& s) {
+	if (s.size() < 1) return 0;
+
+	return process(s, 0);
+}
+
+int main(void) {
+	string s = "131";
+	cout << convertNum2String(s) << endl;
+	system("pause");
+	return 0;
+}
