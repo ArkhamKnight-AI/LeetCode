@@ -1,0 +1,21 @@
+注意:
+如果在左树和右树同时为空的时候才要直接返回path
+
+class Solution {
+public:
+    int sumNumbers(TreeNode* root) {
+        if(root == nullptr) return 0;
+
+        return process(root, 0);
+    }
+
+    int process(TreeNode* node, int path){
+        if(node == nullptr) return 0;
+
+        path = path * 10 + node->val;
+
+        if(node->left == nullptr && node->right == nullptr) return path;
+
+        return process(node->left, path) + process(node->right, path);
+    }
+};
