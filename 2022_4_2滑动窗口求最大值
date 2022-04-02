@@ -1,0 +1,45 @@
+注意：
+1.为什么中间的数不会比头索引小呢?因为一个数进入的时候,如果尾部的数小于当前数就要弹出;头的索引是肯定小于后面的索引的否则就已经被淘汰了,也就是说:头部的索引肯定是最老的。
+
+class Solution {
+public:
+    vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+        if(nums.size() < k || k <= 0) return {};
+
+        //记录最大值的数组
+        vector<int> res(nums.size() - k + 1);
+        //记录最大值数组的下标
+        int index = 0;
+
+        //双端队列 存放下标
+        deque<int> maxVal;
+
+        //这里的R 就是滑动窗口的右边界
+        for(int R = 0; R < nums.size(); R++){
+            //进窗口逻辑
+            //当前的队列不为空 且当前要压入的数一直大于队尾 一直弹出直至不符合条件
+            while(!maxVal.empty() && nums[R] >= nums[maxVal.back()]){
+                maxVal.pop_back();
+            }
+
+            //放入当前的数
+            maxVal.push_back(R);
+
+            //淘汰过期的数
+            //如果头部的数是当前的最大值
+            //为什么中间的数不会比头索引小呢?
+            //因为小于就要从尾部弹出 如果没弹出 说明头的索引是靠前的
+            //也就是说 头部的索引肯定是最老的
+            if(R - k == maxVal.front()){
+                maxVal.pop_front();
+            }
+
+            //出窗口 没有形成w长度前 不生成结果
+            if(R >= k - 1){
+                res[index++] = nums[maxVal.front()];
+            }
+        }
+
+        return res;
+    }
+};
