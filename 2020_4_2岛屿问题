@@ -1,0 +1,44 @@
+注意:
+1.判断越界的条件应该是>=M和>=N
+
+class Solution {
+public:
+    int numIslands(vector<vector<char>>& grid) {
+        if(grid.size() < 1) return 0;
+        int M = grid.size();
+        int N = grid[0].size();
+        
+        int res = 0;
+        for(int i = 0; i < M; i++){
+            for(int j = 0; j < N; j++){
+                if(grid[i][j] == '1'){
+                    //调用感染过程
+                    infect(grid, i, j, M, N);
+                    res++;
+                }
+            }
+        }
+
+        return res;
+    }
+
+
+    //感染过程 递归进行感染过程
+    //m->矩阵 i->当前位置在第几行 j->当前位置在第几列
+    //M->矩阵行数 N->矩阵列数
+    void infect(vector<vector<char>>& m, int i, int j, int M, int N){
+        //几种情况直接返回:
+        //(1)当前位置不是1->防止重复感染或漏感染
+        //(2)当前位置越界
+        if(i < 0 || i >= M || j < 0 || j >= N || m[i][j] != '1') return;
+
+        //当i,j没越界 且当前位置是1 发生感染
+        m[i][j] = '2';
+
+        //递归地在上下左右感染
+        infect(m, i - 1, j, M, N);
+        infect(m, i + 1, j, M, N);
+        infect(m, i, j - 1, M, N);
+        infect(m, i, j + 1, M, N);
+    }
+};
