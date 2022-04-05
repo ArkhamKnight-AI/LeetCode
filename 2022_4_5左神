@@ -1,0 +1,69 @@
+求指标A的最大值
+指标A:数组中累加和与最小值的乘积
+返回子数组中指标A的最大值
+
+#include<iostream>
+#include<vector>
+#include<stack>
+#include<algorithm>
+using namespace std;
+
+int maxA(vector<int>& arr) {
+	if (arr.size() < 1) return 0;
+
+	//生成记录单调栈原型的数组
+	vector<vector<int>> res(arr.size(), vector<int>(2));
+	//栈底->栈顶 小->大
+	stack<int> monStack;
+	for (int i = 0; i < arr.size(); i++) {
+		//如果当前放入的数小于栈顶元素的数
+		while (!monStack.empty() && arr[i] < arr[monStack.top()]) {
+			int popIndex = monStack.top();
+			monStack.pop();
+			int leftLessIndex = monStack.empty() ? -1 : monStack.top();
+			res[popIndex][0] = leftLessIndex;
+			res[popIndex][1] = i;
+		}
+
+		monStack.push(i);	
+	}
+
+	while (!monStack.empty()) {
+		int popIndex = monStack.top();
+		monStack.pop();
+		int leftLessIndex = monStack.empty() ? -1 : monStack.top();
+		res[popIndex][0] = leftLessIndex;
+		res[popIndex][1] = -1;
+	}
+
+	int maxVal = INT_MIN;
+	for (int i = 0; i < arr.size(); i++) {
+		//左边从什么地方开始加
+		int left = res[i][0] + 1;
+		//右边加到什么位置 如果没有位置 我可以加到arr.size() - 1 如果有限制 我只能加到right - 1
+		//这里的-1可以通过for循环中的<控制
+		int right = res[i][1] == -1 ? arr.size() : res[i][1];
+		int sum = 0;
+		for (; left < right; left++) {
+			//求数组累加和
+			sum += arr[left];
+		}
+
+		maxVal = max(maxVal, sum * arr[i]);
+	}
+	return maxVal;
+}
+
+int main(void) {
+	vector<int> num = { 5,3,1,4,2 };
+	/*vector<vector<int>> res = getNearestLess(num);
+	for (int i = 0; i < num.size(); i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << res[i][j] << " ";
+		}
+		cout << endl;
+	}*/
+	cout << maxA(num) << endl;
+	system("pause");
+	return 0;
+}
