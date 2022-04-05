@@ -1,0 +1,82 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<stack>
+using namespace std;
+
+//单调栈
+//返回的是一个二维数组 这个二位数组是N*2的
+//第i行 第一个数 表示 这个数左侧 小于这个数 且离这个数最近的元素的值
+//第二个数 表示 这个数右侧 小于这个数 且离这个数最近的元素的值
+vector<vector<int>> getNearestSmaller(vector<int>& num) {
+	if (num.size() < 1) return {};
+
+	if (num.size() == 1) return { {-1, -1} };
+		
+	stack<vector<int>> monStack;
+	//生成一个N*2的结果 保存每个数左边比它小离他最近 和 右边比他小离他最近的元素
+	vector<vector<int>> res(num.size(), vector<int>(2));
+	//开始便利数组中所有数
+	for (int i = 0; i < num.size(); i++) {
+		//当栈不为空 且 栈顶元素代表的值小于当前元素 生成 栈顶元素 的信息
+		while (!monStack.empty() && num[monStack.top()[0]] > num[i]) {
+			//栈顶元素 -> 一个索引的列表
+			vector<int> topList = monStack.top();
+			monStack.pop();
+
+			//最左侧的索引->如果栈空了 说明没有数比当前这批数小 返回-1
+			//如果有 那么就是 压在下面的那些数中最右的位置
+			//为什么是最右边的位置 -> 对于当前这些数来说 如果在之前遇到了值小于 压在下面的那些下标最右边的位置
+			//那么下面压的那些数就已经被释放了
+			int leftLessIndex = monStack.empty() ? -1 : monStack.top()[monStack.top().size() - 1];
+
+			//生成一批数的信息
+			for (int j = 0; j < topList.size(); j++) {
+				//栈顶vector中的第j个元素 -> 是一个索引
+				//左边比他小 且最靠近他的位置 是下面压得数 最右边的位置	
+				res[topList[j]][0] = leftLessIndex;
+				//右边比它小 且离他最近的就是当前要压入的数
+				res[topList[j]][1] = i;
+			}
+		}
+
+		//当遇到了相同的数 且 栈不为空的时候
+		if (!monStack.empty() && num[monStack.top()[0]] == num[i]) {
+			//那么将这个数加入到栈顶列表中
+			monStack.top().push_back(i);
+		}
+		//栈空了 或者 当前加入的数 大于 栈顶元素索引所代表的的那一批数
+		else {
+			vector<int> newList = { i };
+			monStack.push(newList);
+		}
+	 }
+
+	//清算阶段
+	while (!monStack.empty()) {
+		vector<int> topList = monStack.top();
+		monStack.pop();
+		int leftLessIndex = monStack.empty() ? -1 : monStack.top()[monStack.top().size() - 1];
+		for (int i = 0; i < topList.size(); i++) {
+			//生成栈顶元素第i个索引的信息
+			res[topList[i]][0] = leftLessIndex;
+			//右侧无比它小的数了
+			res[topList[i]][1] = -1;
+		}
+	}
+
+	return res;
+}
+
+int main(void) {
+	vector<int> num = { 3, 2, 3, 5, 3, 1 };
+	vector<vector<int>> res = getNearestSmaller(num);
+	for (int i = 0; i < res.size(); i++) {
+		for (int j = 0; j < 2; j++) {
+			cout << res[i][j] << " ";
+		}
+		cout << endl;
+	}
+	system("pause");
+	return 0;
+}
