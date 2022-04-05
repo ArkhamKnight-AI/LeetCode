@@ -4,7 +4,37 @@
 #include<stack>
 using namespace std;
 
-//单调栈
+//单调栈 无重复元素的情况
+vector<vector<int>> getNearestLess(vector<int>& arr) {
+	//生成记录单调栈原型的数组
+	vector<vector<int>> res(arr.size(), vector<int>(2));
+	//栈底->栈顶 小->大
+	stack<int> monStack;
+	for (int i = 0; i < arr.size(); i++) {
+		//如果当前放入的数小于栈顶元素的数
+		while (!monStack.empty() && arr[i] < arr[monStack.top()]) {
+			int popIndex = monStack.top();
+			monStack.pop();
+			int leftLessIndex = monStack.empty() ? -1 : monStack.top();
+			res[popIndex][0] = leftLessIndex;
+			res[popIndex][1] = i;
+		}
+
+		monStack.push(i);
+	}
+
+	while (!monStack.empty()) {
+		int popIndex = monStack.top();
+		monStack.pop();
+		int leftLessIndex = monStack.empty() ? -1 : monStack.top();
+		res[popIndex][0] = leftLessIndex;
+		res[popIndex][1] = -1;
+	}
+	return res;
+}
+
+
+//单调栈 有重复元素的情况
 //返回的是一个二维数组 这个二位数组是N*2的
 //第i行 第一个数 表示 这个数左侧 小于这个数 且离这个数最近的元素的值
 //第二个数 表示 这个数右侧 小于这个数 且离这个数最近的元素的值
