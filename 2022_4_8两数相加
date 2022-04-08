@@ -1,0 +1,21 @@
+注意:
+1.unsigned int可以防止溢出问题 
+2.左移数的最高位是符号位 可能会报错
+3.注意中间变量
+
+class Solution {
+public:
+    int getSum(int a, int b) {
+        
+        //b承载的是进位信息
+        while (b != 0) {
+            //进位
+            unsigned int carry = (unsigned int)(a & b) << 1;
+            
+            a = a ^ b;
+            b = carry;
+        }
+        return a;
+    }
+
+};
