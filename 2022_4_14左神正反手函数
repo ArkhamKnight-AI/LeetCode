@@ -1,0 +1,77 @@
+注意：
+1.改动态规划表的时候 因为是要沿着对角线方向写 所以不能用两个for循环遍历
+2.注意写动态规划表的顺序
+3.不能用row的原因是因为有i+1会越界
+4.重点看是怎样用while控制写dp表的顺序的
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//范围上尝试的模型
+//先手函数 在arr的L~R区间上计算
+int s(vector<int>& arr, int L, int R);
+int f(vector<int>& arr, int L, int R) {
+	if (L == R) {
+		return arr[L];
+	}
+
+	return max(arr[L] + s(arr, L + 1, R), arr[R] + s(arr, L, R - 1));
+}
+
+//后手函数
+int s(vector<int>& arr, int L, int R) {
+	if (L == R) return 0;
+
+	//后手 别人肯定把最小的结果留给我
+	return min(f(arr, L + 1, R), f(arr, L, R - 1));
+}
+
+int maxRes1(vector<int>& arr) {
+	if (arr.size() < 1) return 0;
+	return max(f(arr, 0, arr.size() - 1), s(arr, 0, arr.size() - 1));
+}
+
+//改成动态规划表
+//L不可能跑到R的右边去 所以整个S表和F表的左下区域是无效区域
+//L == R的时候 动态规划表里就是arr[L]的值
+//交替着按对角线方向把表格填完
+int maxRes2(vector<int>& arr) {
+	int N = arr.size();
+	vector<vector<int>> s(N, vector<int>(N));
+	vector<vector<int>> f(N, vector<int>(N));
+
+	for (int i = 0; i < N; i++) {
+		f[i][i] = arr[i];
+		s[i][i] = 0;
+	}
+	
+	//从第0行 第1个位置开始计算
+	int row = 0;
+	int col = 1;
+
+	//要按着对角线的方向写 所以不能用两个for循环
+	while (col < N) {
+		int i = row;
+		int j = col;
+		while (i < N && j < N) {
+			f[i][j] = max(arr[i] + s[i + 1][j], arr[j] + s[i][j - 1]);
+			s[i][j] = min(f[i + 1][j], f[i][j - 1]);
+			i++;
+			j++;
+		}
+
+		col++;
+	}
+
+	return max(s[0][N - 1], f[0][N - 1]);
+}
+
+int main() {
+	vector<int> arr = { 3, 100, 4, 50 };
+	cout << maxRes1(arr) << endl;
+	cout << maxRes2(arr) << endl;
+	system("pause");
+	return 0;
+}
