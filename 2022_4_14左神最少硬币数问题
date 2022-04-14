@@ -1,3 +1,32 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+
+@ArkhamKnight-AI
+ArkhamKnight - AI
+/
+LeetCode
+Public
+Code
+Issues
+Pull requests
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+LeetCode / 2022_4_14左神最少硬币数问题
+@ArkhamKnight-AI
+ArkhamKnight - AI Create 2022_4_14左神最少硬币数问题
+Latest commit 27772f4 4 minutes ago
+History
+1 contributor
+151 lines(129 sloc)  3.39 KB
+
 #include<iostream>
 #include<algorithm>
 #include<vector>
@@ -13,7 +42,7 @@ int process1(vector<int>& coins, int index, int rest) {
 
 	//剩余钱数少于0 说明这种方法不行
 	if (rest < 0) return -1;
-	
+
 	//剩余钱数等于0 说明此时不需要再用硬币了 返回0
 	if (rest == 0) return 0;
 
@@ -22,7 +51,7 @@ int process1(vector<int>& coins, int index, int rest) {
 	int p1 = process1(coins, index + 1, rest);
 	//要当前的硬币
 	int p2 = process1(coins, index + 1, rest - coins[index]);
-	  
+
 	//如果p1或者p2返回-1会对结果有影响
 	//p1和p2都为-1表示当前的尝试方法不可能得到rest这么多钱
 	if (p1 == -1 && p2 == -1) {
@@ -35,7 +64,7 @@ int process1(vector<int>& coins, int index, int rest) {
 			return p2 + 1;
 		}
 		//p2为-1时 返回p1
-		if(p2 == -1) {
+		if (p2 == -1) {
 			return p1;
 		}
 	}
@@ -70,7 +99,7 @@ int process2(vector<int>& coins, int index, int rest, vector<vector<int>>& dp) {
 
 			//选择了index位置的货币
 			int p2 = process2(coins, index + 1, rest - coins[index], dp);
-			
+
 			//如果选或不选index位置的数都不能使rest为0 说明当前决策错了 返回-1
 			if (p1 == -1 && p2 == -1) {
 				dp[index][rest] = -1;
@@ -133,8 +162,11 @@ int minCoins3(vector<int>& coins, int target) {
 					dp[index][rest] = p2 + 1;
 				}
 				//p2为-1时 返回p1
-				if (p2 == -1) {
+				else if (p2 == -1) {
 					dp[index][rest] = p1;
+				}
+				else {
+					dp[index][rest] = min(p1, p2 + 1);
 				}
 			}
 		}
@@ -145,7 +177,7 @@ int minCoins3(vector<int>& coins, int target) {
 
 
 int main() {
-	
+
 	system("pause");
 	return 0;
 }
