@@ -1,0 +1,104 @@
+#include<iostream>
+#include<string>
+#include<vector>
+using namespace std;
+
+//N->总共有N个格子     固定参数
+//E->终止位置          固定参数
+//cur->当前位置        可变参数
+//rest->剩余rest步要走 可变参数
+//递归方法
+int process1(int N, int E, int cur, int rest) {
+	//没有步数可以走了 终点若在E位置 说明找到了一种方法
+	if (rest == 0) {
+		return cur == E ? 1 : 0;
+	}
+
+	//当前在1位置 只能向右移动一步到2位置
+	if (cur == 1) {
+		return process1(N, E, 2, rest - 1);
+	}
+
+	//当前在N位置 只能向左移动一步到1位置
+	if (cur == N) {
+		return process1(N, E, N - 1, rest - 1);
+	}
+
+	//否则来到中间位置 既可以向左移动 又可以向右移动
+	return process1(N, E, cur - 1, rest - 1) + process1(N, E, cur + 1, rest - 1);
+}
+
+int walkWays1(int N, int E, int S, int K) {
+	return process1(N, E, S, K);
+}
+
+//记忆化搜索 带着表跑递归 
+int process2(int N, int E, int cur, int rest, vector<vector<int>>& dp);
+int walkWays2(int N, int E, int S, int K) {
+	//可变参数rest只有0~K的变化范围 故申请K+1个格子就够了
+	//可变参数cur有1~N的变化范围 申请N+1个格子绝对够用
+	vector<vector<int>> dp(N + 1, vector<int>(K + 1));
+
+	//改动态规划表前首先将里面的元素值都改为-1
+	for (int i = 0; i < dp.size(); i++) {
+		for (int j = 0; j < dp[0].size(); j++) {
+			dp[i][j] = -1;
+		}
+	}
+
+	return process2(N, E, S, K, dp);
+}
+
+int process2(int N, int E, int cur, int rest, vector<vector<int>>& dp) {
+	//如果计算过了 那么就直接返回这个格子中的元素
+	if (dp[cur][rest] != -1) return dp[cur][rest];
+
+	//缓存没命中 没有步数可走了 把答案记在格子里 然后返回
+	if (rest == 0) {
+		dp[cur][rest] = cur == E ? 1 : 0;
+	}
+
+	//rest > 0 有步数可走 先把答案记在格子里 
+	else if (cur == 1) {
+		dp[cur][rest] = process1(N, E, 2, rest - 1);
+	}
+	//当前在N位置 只能向左移动一步到1位置 把答案记在格子里 
+	else if (cur == N){
+		dp[cur][rest] = process1(N, E, N - 1, rest - 1);
+	}
+	//否则来到中间位置 既可以向左移动 又可以向右移动 把答案记在格子里
+	else {
+		dp[cur][rest] = process1(N, E, cur - 1, rest - 1) + process1(N, E, cur + 1, rest - 1);
+	}
+	return dp[cur][rest];
+}
+
+//严格表结构的动态规划表 整理位置依赖
+//最终想要的是K, S位置的值 代表原问题
+//base case说明了哪些位置可以直接得到答案
+int walkWays3(int N, int S, int E, int K) {
+	vector<vector<int>> dp(K + 1, vector<int>(N + 1));
+	dp[0][E] = 1;
+	for (int rest = 1; rest <= K; rest++) {
+		for (int cur = 1; cur <= N; cur++) {
+			if (cur == 1) {
+				dp[rest][cur] = dp[rest - 1][2];
+			}
+			else if (cur == N) {
+				dp[rest][cur] = dp[rest - 1][N - 1];
+			}
+			else {
+				dp[rest][cur] = dp[rest - 1][cur + 1] + dp[rest - 1][cur - 1];
+			}
+		}
+	}
+
+	return dp[K][S];
+}
+
+
+int main() {
+	cout << walkWays1(5, 2, 4, 5) << endl;
+	system("pause");
+	return 0;
+}
