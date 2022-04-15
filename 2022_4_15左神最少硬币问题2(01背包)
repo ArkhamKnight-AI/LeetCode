@@ -1,3 +1,6 @@
+注意：
+1.代替枚举行为：斜率优化 使用邻近位置替代枚举行为 只与观察有关 与题意无关
+
 #include<iostream>
 #include<vector>
 #include<algorithm>
@@ -46,6 +49,7 @@ int coinWays2(vector<int>& coins, int target) {
 	//从下往上 从左往右 填写dp表
 	for (int row = N - 1; row >= 0; row--) {
 		for (int col = 0; col <= target; col++) {
+		//斜率优化 使用邻近位置替代枚举行为 只与观察有关 与题意无关
 		//此处可以省去枚举行为 因为计算当前格子的时候 有的值前面的格子已经算过了
 		//也就是 col - coins[row]位置的数已经计算过了
 		//for (int zhang = 0; zhang * coins[row] <= col; zhang++) {
