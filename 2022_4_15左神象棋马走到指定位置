@@ -1,0 +1,68 @@
+注意
+1.三维表代表行、列、层三个参数的先后顺序
+2.只有层之间有依赖关系
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//范围上尝试的模型
+//象棋中马走rest步 到指定的位置(i, j) 返回方法数
+int process1(int i, int j, int rest) {
+	if (i < 0 || i > 8 || j < 0 || j > 9) return 0;
+	//只剩0步 如果要走到的地方是(0, 0)那么就有一种方法
+	if (rest == 0) return (i == 0 && j == 0) ? 1 : 0;
+
+	//8个位置通过rest - 1步到(i, j)位置
+	return process1(i - 2, j - 1, rest - 1) +
+		process1(i - 2, j + 1, rest - 1) +
+		process1(i + 2, j - 1, rest - 1) +
+		process1(i + 2, j + 1, rest - 1) +
+		process1(i - 1, j - 2, rest - 1) +
+		process1(i - 1, j + 2, rest - 1) +
+		process1(i + 1, j - 2, rest - 1) +
+		process1(i + 1, j + 2, rest - 1);
+}
+
+int horseWalk1(int x, int y, int k) {
+	return process1(x, y, k);
+}
+
+//定义一个从矩阵中拿值的操作
+//i->第i层 j->第j行 k->第k列
+int getValue(vector<vector<vector<int>>>& dp, int i, int j, int k) {
+	if (j < 0 || j > 9 || k < 0 || k > 8) return 0;
+	return dp[i][j][k];
+}
+
+int horseWalk2(int x, int y, int k) {
+	//3个可变参数x,y,k 准备一个三维表
+	vector<vector<vector<int>>> dp(k + 1, vector<vector<int>>(10, vector<int>(9)));
+	dp[0][0][0] = 1;
+
+	//第0层已经写好 除了(0,0,0)位置为1 其他均为0 所以从第1层开始求
+	for (int level = 1; level <= k; level++) {
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 9; col++) {
+				dp[level][row][col] += getValue(dp, level - 1, row - 2, col - 1);
+				dp[level][row][col] += getValue(dp, level - 1, row - 2, col + 1);
+				dp[level][row][col] += getValue(dp, level - 1, row + 2, col - 1);
+				dp[level][row][col] += getValue(dp, level - 1, row + 2, col + 1);
+				dp[level][row][col] += getValue(dp, level - 1, row - 1, col - 2);
+				dp[level][row][col] += getValue(dp, level - 1, row - 1, col + 2);
+				dp[level][row][col] += getValue(dp, level - 1, row + 1, col - 2);
+				dp[level][row][col] += getValue(dp, level - 1, row + 1, col + 2);
+			}
+		}
+	}
+
+	return dp[k][x][y];
+}
+
+int main() {
+	cout << horseWalk1(7, 7, 10) << endl;
+	cout << horseWalk2(7, 7, 10) << endl;
+	system("pause");
+	return 0;
+}
