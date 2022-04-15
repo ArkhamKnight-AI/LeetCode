@@ -1,0 +1,64 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//暴力递归
+int process1(vector<int>& coins, int index, int rest) {
+	//rest值小于0 说明当前方法不能成功
+	if (rest < 0) return 0;
+	
+	//rest值为1 说明找到了1种方法
+	if (rest == 0) return 1;
+
+	//index来到了终止位置 而rest却大于0 说明没有方法
+	if (index == coins.size()) return 0;
+
+	//左神的base case
+	if (index == coins.size()) {
+		return rest == 0 ? 1 : 0;
+	}
+
+	int res = 0;
+	//当前来到index位置
+	for (int zhang = 0; coins[index] * zhang <= rest; zhang++) {
+		res += process1(coins, index + 1, rest - zhang * coins[index]);
+	}
+
+	return res;
+}
+
+int coinWays1(vector<int>& coins, int target) {
+	return process1(coins, 0, target);
+}
+
+//动态规划
+int coinWays2(vector<int>& coins, int target) {
+	if (coins.size() < 1 || target <= 0) return 0;
+
+	//rest是0~target 总共target+1个值
+	//index是0~coins.size() 总共coins.size() + 1个值
+	int N = coins.size();
+	vector<vector<int>> dp(N + 1, vector<int>(target + 1));
+
+	dp[N][0] = 1;
+
+	//从下往上 从左往右 填写dp表
+	for (int row = N - 1; row >= 0; row--) {
+		for (int col = 0; col <= target; col++) {
+			for (int zhang = 0; zhang * coins[row] <= col; zhang++) {
+				dp[row][col] += dp[row + 1][col - zhang * coins[row]];
+			}
+		}
+	}
+
+	return dp[0][target];
+}
+
+int main() {
+	vector<int> coins = { 3, 5, 1, 2 };
+	cout << coinWays1(coins, 10) << endl;
+	cout << coinWays2(coins, 10) << endl;
+	system("pause");
+	return 0;
+}
