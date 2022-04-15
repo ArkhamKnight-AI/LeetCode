@@ -2,6 +2,8 @@
 1.要开辟(M + 2, N + 2, K + 1)大小的动态规划表 否则会越界
 2.1中说到的原因主要是因为有(row - 1, col + 1)这种操作
 3.注意辗转相除法的方法
+4.也可以使用象棋走马中的getValue方法获取三维表中某个位置数的方法写
+5.不适用getValue方法为了 防止在dp表中索引 +1 -1 越界 才开辟了更大的数组
 
 #include<iostream>
 #include<vector>
@@ -52,7 +54,7 @@ string BobLive1(int M, int N, int i, int j, int k) {
 //改动态规划表
 //M * N大小的区域 在(i,j)位置随机上下左右移动k步 存活的概率 
 string BobLive2(int M, int N, int i, int j, int k) {
-	//0~M, 0~N 故大小为(M + 1) * (N + 1)
+	//0~M-1, 0~N-1 故大小为M * N
 	vector<vector<vector<long>>> dp(k + 1, vector<vector<long>>(M + 2, vector<long>(N + 2)));
 
 	//rest为0时(第0层) 说明找到了1种活法
@@ -75,6 +77,47 @@ string BobLive2(int M, int N, int i, int j, int k) {
 	}
 
 	long live = dp[k][i + 1][j + 1];
+	long total = (long)pow(4, k);
+	long maxgcd = gcd(total, live);
+	return to_string(live / maxgcd) + "/" + to_string(total / maxgcd);
+}
+
+//使用getValue方法
+long getValue(vector<vector<vector<long>>>& dp, int M, int N, int level, int row, int col) {
+	if (row < 0 || row == M || col < 0 || col == N) return 0;
+	return dp[level][row][col];
+}
+
+//改动态规划表
+//M * N大小的区域 在(i,j)位置随机上下左右移动k步 存活的概率 
+string BobLive2(int M, int N, int i, int j, int k) {
+	//0~M-1, 0~N-1 故大小为M * 
+	vector<vector<vector<long>>> dp(k + 1, vector<vector<long>>(M, vector<long>(N)));
+
+	//rest为0时(第0层) 说明找到了1种活法
+	for (int row = 0; row < M; row++) {
+		for (int col = 0; col < N; col++) {
+			dp[0][row][col] = 1;
+		}
+	}
+	
+	//第0层已经填好了
+	for (int level = 1; level <= k; level++) {
+		for (int row = 0; row < M; row++) {
+			for (int col = 0; col < N; col++) {
+				/*dp[level][row][col] = dp[level - 1][row - 1][col];
+				dp[level][row][col] += dp[level - 1][row + 1][col];
+				dp[level][row][col] += dp[level - 1][row][col - 1];
+				dp[level][row][col] += dp[level - 1][row][col + 1];*/
+				dp[level][row][col] = getValue(dp, M, N, level - 1, row - 1, col);
+				dp[level][row][col] += getValue(dp, M, N, level - 1, row + 1, col);
+				dp[level][row][col] += getValue(dp, M, N, level - 1, row, col - 1);
+				dp[level][row][col] += getValue(dp, M, N, level - 1, row, col + 1);
+			}
+		}
+	}
+
+	long live = dp[k][i][j];
 	long total = (long)pow(4, k);
 	long maxgcd = gcd(total, live);
 	return to_string(live / maxgcd) + "/" + to_string(total / maxgcd);
