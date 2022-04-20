@@ -1,0 +1,75 @@
+注意：输入输出的写法
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<unordered_map>
+using namespace std;
+
+struct Employee {
+	//员工的 快乐值
+	int happiness;
+	//下级员工
+	vector<int> nexts;
+	
+};  
+
+struct ReturnInfo {
+	int laiMaxHappy;
+	int bulaiMaxHappy;
+	ReturnInfo(int lai, int bulai) :laiMaxHappy(lai), bulaiMaxHappy(bulai) {}
+};
+
+ReturnInfo process(vector<Employee>& employees, int index) {
+	//如果下级数组为空 说明来到了基层员工
+	if (employees[index].nexts.size() == 0) {
+		return { employees[index].happiness, 0 };
+	}
+
+	//下面按照x这个节点来不来进行讨论
+	int lai = employees[index].happiness;
+
+	//x不来的情况下 最大快乐值是x所有下级中来和不来的最大值
+	int bulai = 0;
+	for (auto i : employees[index].nexts) {
+		//下级节点来与不来的最大值
+		ReturnInfo iMaxhappiness = process(employees, i);
+		//x不来 则是员工i分别来与不来的最大值 加和
+		bulai += max(iMaxhappiness.bulaiMaxHappy, iMaxhappiness.laiMaxHappy);
+
+		//x来的话 则是x的快乐值 累加上员工i 不来的最大值
+		lai += iMaxhappiness.bulaiMaxHappy;
+	}
+
+	return { lai, bulai };
+}
+
+
+
+int main() {
+	//n表示总共有多少人 root表示领导
+	int n, root;
+	cin >> n >> root;
+
+	//存放employee的数组
+	vector<Employee> employees(n + 1);
+
+	//设置开心值
+	for (int i = 1; i < employees.size(); i++) {
+		cin >> employees[i].happiness;
+	}
+
+	//设置上下级关系 这里i只起到计数的作用
+	for (int i = 0; i < n - 1; i++) {
+		//leader和subordinate是编号
+		int leader, subordinate;
+		cin >> leader >> subordinate;
+		employees[leader].nexts.push_back(subordinate);
+	}
+
+	ReturnInfo maxHappiness = process(employees, 1);
+	cout << max(maxHappiness.bulaiMaxHappy, maxHappiness.laiMaxHappy);
+
+	system("pause");
+	return 0;
+}
