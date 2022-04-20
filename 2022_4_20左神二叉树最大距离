@@ -43,6 +43,11 @@ ReturnInfo process(TreeNode* x) {
 	return res;
 }
 
+int maxDistance(TreeNode* root){
+    if(root == nullptr) return 0;
+    return process(root).maxDistance;
+}
+
 int main() {
 	system("pause");
 	return 0;
