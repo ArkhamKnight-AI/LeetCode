@@ -1,0 +1,74 @@
+注意：最大值的更新方法是通过下标来更新的
+想了很久为什么
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//找大于等于某个数最左侧的位置 找arr中大于等于num最左侧的位置
+int mostLeft(vector<int>& arr, int num) {
+	int L = 0;
+	int R = arr.size() - 1;
+	int index = -1;
+
+	while (L <= R) {
+		int mid = L + (R - L) / 2;
+		if (arr[mid] >= num) {
+			index = mid;
+			R = mid - 1;
+		}
+		else {
+			L = mid + 1;
+		}
+	}
+
+	return index;
+}
+
+//绳子压中最多的点的个数
+int maxPoints1(vector<int>& points, int length) {
+	if (length <= 0) return 0;
+	
+	int L = 0;
+	int R = 0;
+	int maxpoints = 0;
+
+	//找大于等于某个数最左的位置 返回下标
+	for (int i = 0; i < points.size(); i++) {
+		R = points[i];
+		L = R - length;
+
+		int mostLeftIndex = mostLeft(points, L);
+
+		maxpoints = max(maxpoints, i - mostLeftIndex + 1);
+	}
+	return maxpoints;
+}
+
+//使用滑动窗口
+int maxPoints2(vector<int>& arr, int length) {
+	if (length <= 0) return 0;
+
+	int maxCount = 1;
+
+	int R = 0;
+
+	for (int i = 0; i < arr.size(); i++) {
+		while (R < arr.size() && arr[R] - arr[i] <= length) {
+			R++;
+		}
+		maxCount = max(maxCount, R - i);
+	}
+
+	return maxCount;
+}
+
+
+int main() {
+	vector<int> arr = {2, 4, 8, 9, 12, 17, 30 };
+	cout << maxPoints1(arr, 5) << endl;
+	cout << maxPoints2(arr, 5) << endl;
+	system("pause");
+	return 0;
+}
