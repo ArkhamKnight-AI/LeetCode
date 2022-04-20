@@ -1,0 +1,49 @@
+树形dp
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v): val(v), left(nullptr), right(nullptr){}
+};
+
+struct ReturnInfo {
+	int height;
+	int maxDistance;
+	ReturnInfo(int h, int dis) :height(h), maxDistance(dis) {}
+};
+
+ReturnInfo process(TreeNode* x) {
+	if (x == nullptr) {
+		ReturnInfo res(0, 0);
+		return res;
+	}
+
+	ReturnInfo leftInfo = process(x->left);
+	ReturnInfo rightInfo = process(x->right);
+	
+	//左树中最长距离
+	int p1 = leftInfo.maxDistance;
+	//右树中最长距离
+	int p2 = rightInfo.maxDistance;
+	//加上当前节点的最长距离
+	int p3 = leftInfo.height + rightInfo.height + 1;
+	
+	//加工出的最长距离
+	int maxDis = max(p1, max(p2, p3));
+
+	//加工出的高度
+	int height = max(leftInfo.height, rightInfo.height) + 1;
+
+	ReturnInfo res(height, maxDis);
+	return res;
+}
+
+int main() {
+	system("pause");
+	return 0;
+}
