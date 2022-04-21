@@ -1,0 +1,36 @@
+注意：防止溢出的方法
+
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+//先手后手吃草
+string winner(int grass) {
+	if (grass < 5) return (grass == 0 || grass == 2) ? "后手" : "先手";
+
+	//从1份草开始尝试
+	int base = 1;
+
+	//从吃1份草开始尝试 看吃到 base 的时候有没有1种尝试可以赢
+	while (base <= grass) {
+		
+		//递归函数中的后手 是当前的先手
+		if (winner(grass - base) == "后手") return "先手";
+
+		//防止*4溢出
+		if (base > grass / 4) break;
+
+		base *= 4;
+	}
+
+	return "后手";
+}
+
+int main() {
+	for (int i = 0; i < 50; i++) {
+		cout << i << ": " << winner(i) << endl;
+	}
+	system("pause");
+	return 0;
+}
