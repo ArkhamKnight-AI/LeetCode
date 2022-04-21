@@ -1,0 +1,39 @@
+#include<iostream>
+#include<vector>
+8个袋子和6个袋子 最少使用多少个袋子
+
+#include<algorithm>
+using namespace std;
+
+int solveApples1(int apples) {
+	if (apples % 2 != 0 || (apples < 8 && apples != 6)) return -1;
+
+	int bag8 = apples / 8;
+	int bag6 = -1;
+
+	int rest = apples % 8;
+
+	while (bag8 >= 0 && rest < 24) {
+		//剩余可以用6袋子装满 直接返回
+		if (rest % 6 == 0) {
+			bag6 = rest / 6;
+			break;
+		}
+
+		//剩余不可以用6袋子装满
+		rest += 8;   
+		bag8--;
+	}
+
+	return bag6 == -1 ? -1 : bag8 + bag6;
+}
+
+
+
+int main() {
+	for (int i = 0; i < 100; i++) {
+		cout << solveApples1(i) << endl;
+	}
+	system("pause");
+	return 0;
+}
