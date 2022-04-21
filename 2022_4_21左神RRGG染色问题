@@ -1,0 +1,57 @@
+让左侧全是R 最少要染多少颜色
+使用了预处理技巧
+从 全部为右侧 到 全部为左侧的尝试过程中 总共有s.size() + 1种情况要讨论
+
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+//染色问题 要求左侧全是G 右侧全是R
+int minPaint(string s) {
+	//统计左侧有多少R
+	vector<int> leftG(s.size());
+	//统计右侧有多少G
+	vector<int> rightR(s.size());
+	leftG[0] = s[0] == 'G' ? 1 : 0;
+	rightR[s.size() - 1] = s[s.size() - 1] == 'R' ? 1 : 0;
+
+	//统计左侧有多少R的数组
+	for (int i = 1; i < s.size(); i++) {
+		leftG[i] = leftG[i - 1] + (s[i] == 'G' ? 1 : 0);
+	}
+
+	//统计右侧有多少G的数组
+	for (int i = s.size() - 2; i >= 0; i--) {
+		rightR[i] = rightR[i + 1] + (s[i] == 'R' ? 1 : 0);
+	}
+
+	int minCount = INT_MAX;
+  //总共有s.size() + 1种情况 所以要取等于号
+	for (int i = 0; i <= s.size(); i++) {
+		//i = 0表示全部为右侧 无左侧 此时要把rightR中的R全部变为G
+		if (i == 0) {
+			minCount = min(minCount, rightR[0]);
+			continue;
+		}
+
+		//i = s.size()表示全部为左侧 无右侧 此时要把leftG中的G全部变为R
+		if (i == s.size()) {
+			minCount = min(minCount, leftG[s.size() - 1]);
+			continue;
+		}
+
+		//一般情况
+		minCount = min(minCount, leftG[i - 1] + rightR[i]);
+	}
+
+	return minCount;
+}
+
+int main() {
+	string s = "RRGGG";
+	cout << minPaint(s) << endl;
+	system("pause");
+	return 0;
+}
