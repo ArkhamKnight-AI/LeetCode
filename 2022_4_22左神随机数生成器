@@ -1,0 +1,37 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<ctime>
+using namespace std;
+
+//1-5发生器
+int f() {
+	srand((unsigned int)time(NULL));
+	return rand() % 5 + 1;
+}
+
+//利用f函数加工出等概率返回0和1的函数
+//等于
+int return01() {
+	int num = f();
+	do {
+		num = f();
+	} while (num == 3);
+	return num < 3 ? 0 : 1;
+}
+
+//等概率返回0~6的函数 3个二进制位拼出0~7
+int g() {
+	int num = 0;
+	do {
+		num = (f() << 2) + (f() << 1) + f();
+	} while (num == 7);
+	return num + 1;
+}
+
+int main() {
+	cout << f() << endl;
+	system("pause");
+	return 0;
+}
