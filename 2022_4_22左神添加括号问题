@@ -1,0 +1,35 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+int addKuo(string& s) {
+	if (s.size() < 1) return 0;
+
+	int count = 0;
+	int ans = 0;
+
+	for (int i = 0; i < s.size(); i++) {
+		if (s[i] == '(') {
+			count++;
+		}
+		else {
+			count--;
+		}
+		if (count == -1) {
+			count = 0;
+			ans++;
+		}
+	}
+
+	return ans + count;
+}
+
+int main() {
+	string s;
+  getline(cin, s);
+	cout << addKuo(s) << endl;
+	system("pause");
+	return 0;
+}
