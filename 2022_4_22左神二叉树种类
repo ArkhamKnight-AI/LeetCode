@@ -1,0 +1,51 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<ctime>
+using namespace std;
+
+//暴力递归
+int process(int n) {
+	//base case
+	if (n < 0) return 0;
+	if (n == 0 || n == 1) return 1;
+	if (n == 2) return 2;
+
+	int types = 0;
+	for (int leftnum = 0; leftnum <= n - 1; leftnum++) {
+		int leftmethod = process(leftnum);
+		int rightmethod = process(n - 1 - leftnum);
+		types += leftmethod * rightmethod;
+	}
+
+	return types;
+}
+
+int treeNums(int n) {
+	return process(n);
+}
+
+//动态规划
+int dpWay(int n) {
+	if (n < 2) return 1;
+	vector<int> dp(n + 1);
+
+	dp[0] = 1;
+	//当前来到第i个格子 表示总共有i个节点
+	for (int i = 1; i < dp.size(); i++) {
+		//其中左树有j个节点
+		for (int j = 0; j <= i - 1; j++) {
+			dp[i] += dp[j] * dp[i - 1 - j];
+		}
+	}
+
+	return dp[n];
+}
+
+int main() {
+	cout << dpWay(3) << endl;
+	cout << treeNums(3) << endl;
+	system("pause");
+	return 0;
+}
