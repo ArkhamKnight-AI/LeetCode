@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int countKDifference(vector<int>& nums, int k) {
+    //存储每个数需要的哪个数
+	//unordered_map<int, int> map1;
+	//存储每个数出现了几次
+	unordered_map<int, int> map2;
+	//for (int i = 0; i < nums.size(); i++) {
+	//	map1[nums[i]] = nums[i] + k;
+	//}
+
+	for (int i = 0; i < nums.size(); i++) {
+		if (map2.find(nums[i]) == map2.end()) {
+			map2.emplace(nums[i], 0);
+		}
+		map2[nums[i]]++;
+	}
+
+	int res = 0;
+
+	if (k == 0) {
+		for (int i = 0; i < nums.size(); i++) {
+			res = res + map2[nums[i]] - 1;
+		}
+		return res;
+	}
+
+	for (int i = 0; i < nums.size(); i++) {
+		res += map2[nums[i] + k];
+	}
+
+	return res;
+    }
+};
