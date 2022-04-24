@@ -1,0 +1,82 @@
+注意：
+动态规划表的条件如何填写 不能遗漏
+
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+
+//递归函数 字符串s 当前来到i位置
+int process(string& s, int i) {
+	//来到了终止位置 说明找到了1种方法
+	if (i == s.size()) return 1;
+
+	//当前位置如果为0 产生不了方法
+	if (s[i] == '0') return 0;
+
+	int count = 0;
+
+	//当s[i]=1时 可以单独将1看成一个 也可以将1与后面一位看成一个整体
+	if (s[i] == '1' && i + 1 < s.size()) {
+		count = process(s, i + 2);
+	}
+
+	//s[i] = 2 且 s[i + 1]没越界的情况下 s[i + 1]的值在0~6之间 可以将2与后面1位看成整体
+	if (s[i] == '2' && i + 1 < s.size() && s[i + 1] <= '6' && s[i + 1] >= '0') {
+		count = process(s, i + 2);
+	}
+
+	//其余情况都只能将s[i]位置的元素单独转化为1个
+	count += process(s, i + 1);
+
+	return count;
+}
+
+int num2String1(string s) {
+	if (s.size() < 1) return 0;
+
+	return process(s, 0);
+}
+
+//改成严格表结构动态规划
+int dpWay(string s) {
+	if (s.size() < 1) return 0;
+
+	vector<int> dp(s.size() + 1);
+	
+	dp[s.size()] = 1;
+
+	dp[s.size() - 1] = s[s.size() - 1] == '0' ? 0 : 1;  
+
+	for (int i = s.size() - 2 ; i >= 0; i--) {
+		if (s[i] == '0') {
+			dp[i] = 0;
+			continue;
+		}
+
+		else if (s[i] == '1') {
+			dp[i] = dp[i + 2] + dp[i + 1];
+		}
+
+		else if(s[i] == '2' && s[i + 1] <= '6' && s[i + 1] >= '0') {
+			dp[i] = dp[i + 2] + dp[i + 1];
+		}
+		else {
+			dp[i] = dp[i + 1];
+		}
+		/*else {
+			dp[i] = dp[i + 1] + (((s[i] - '0') * 10 + s[i + 1] - '0') < 27 ? dp[i + 2] : 0);
+		}*/
+	}
+
+	return dp[0];
+}
+
+int main() {
+	cout << num2String1("12258") << endl;
+	cout << dpWay("12258") << endl;
+	system("pause");
+	return 0;
+} 
