@@ -1,0 +1,79 @@
+注意：
+计算平均值的时候必须要转换为double类型进行计算
+
+#include<iostream>
+#include<vector>
+#include<set>
+#include<algorithm>
+using namespace std;
+
+//求平均值的函数
+double avg(double sum, int arrSize) {
+	if (arrSize < 0) {
+		return 0;
+	}
+
+	return (double)sum / arrSize;
+}
+
+int maxMagicOps(vector<int>& a, vector<int>& b) {
+	double sumA = 0;
+	for (int i = 0; i < a.size(); i++) {
+		sumA += a[i];
+	}
+
+	double sumB = 0;
+	for (int i = 0; i < b.size(); i++) {
+		sumB += b[i];
+	}
+
+	double avgA = avg(sumA, a.size());
+	double avgB = avg(sumB, b.size());
+
+	//如果平均值相等 不能进行magic 操作
+	if (avgA == avgB) return 0;
+
+	vector<int> arrMore;
+	vector<int> arrLess;
+
+	//根据平均值大小对数组进行重定位
+	arrMore = avgA > avgB ? a : b;
+	arrLess = avgA > avgB ? b : a;
+	double sumMore = avgA > avgB ? sumA : sumB;
+	double sumLess = avgA > avgB ? sumB : sumA;
+
+	int arrMoreSize = arrMore.size();
+	int arrLessSize = arrLess.size();
+	int magicops = 0;
+
+	//判断要放入arrLess中的数是否在arrLess中存在
+	set<int> arrLessExist;
+	for (int i = 0; i < arrLess.size(); i++) {
+		arrLessExist.insert(arrLess[i]);
+	}
+
+	//由于每次要从arrMore的数组中拿出大于arrLess平均值的最小的数到arrLess 所以要先从小到大进行排序
+	sort(arrMore.begin(), arrMore.end());
+
+	for (int i = 0; i < arrMore.size(); i++) {
+		//3个条件 arrMore[i]不在集合中 arrMore[i]大于arrLess的平均值 且 arrMore[i]小于arrMore的平均值
+		double cur = (double)arrMore[i];
+		if (cur > avg(sumLess, arrLessSize) && cur < avg(sumMore, arrMoreSize) && arrLessExist.find(cur) == arrLessExist.end()) {
+			sumLess += cur;
+			arrLessSize++;
+			sumMore -= cur;
+			arrMoreSize--;
+			magicops++;
+			arrLessExist.insert(cur);
+		}
+	}
+
+	return magicops;
+}
+
+
+int main() {
+	
+	system("pause");
+	return 0;
+}
