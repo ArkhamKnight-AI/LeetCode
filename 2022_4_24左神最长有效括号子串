@@ -1,0 +1,45 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+//最长有效括号子串
+int maxSub(string& s) {
+	if (s.size() < 1) return 0;
+
+	int maxLength = 0;
+	vector<int> dp(s.size());
+	dp[0] = 0;
+	for (int i = 1; i < s.size(); i++) {
+		//只有以)为最后一个元素才可能有效
+		if (s[i] == ')') {
+			//包括两部分 
+			//(1)从i - 1位置开始向前推dp[i-1]个位置到p位置 看p位置是否是( 如果是 则加上dp[p-1]
+			//pre就是p位置
+			int pre = i - 1 - dp[i - 1];
+			//if (pre < 0) {
+			//	dp[i] = dp[i - 1];
+			//	continue;
+			//}
+			//dp[i] = (s[pre] == '(' ? dp[i - 1] + 2 : dp[i]);
+			////看从p-1位置往前推dp[p-1]位置是否越界 没越界加上dp[p-1]
+			//dp[i] += (pre > 0 ? dp[pre - 1] : 0);
+			if (pre >= 0 && s[pre] == '(') {
+				//3部分 第一部分是i-1位置最长的长度 加上 自己和p位置的字符组成的一对新的括号 加上 p-1位置的最大长度
+				dp[i] = dp[i - 1] + 2 + (pre > 0 ? dp[pre - 1] : 0);
+			}
+		}
+
+		maxLength = max(maxLength, dp[i]);
+	}
+
+	return maxLength;
+}
+
+int main() {
+	string s = "(()())))))";
+	cout << maxSub(s) << endl;
+	system("pause");
+	return 0;
+} 
