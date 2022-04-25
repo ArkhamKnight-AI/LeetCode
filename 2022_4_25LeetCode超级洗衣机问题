@@ -1,0 +1,69 @@
+注意：
+在遍历的同时统计左侧的累加和！
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+using namespace std;
+
+//遍历 找最痛的瓶颈
+int findMinMoves(vector<int>& machines) {
+	int sum = 0;
+	for (int i = 0; i < machines.size(); i++) {
+		sum += machines[i];
+	}
+
+	//如果不能整除 说明无法做到
+	if (sum % machines.size() != 0) return -1;
+
+	//平均每个机器需要多少
+	int avg = sum / machines.size();
+	
+	//遍历数组 找最痛的瓶颈
+	int minMove = 0;
+
+	//左侧累加和
+	int leftSum = 0;
+
+	//i位置为中间位置 左右两侧分别需要多少衣服
+	for (int i = 0; i < machines.size(); i++) {
+		//本轮最少移动数
+		int curMin = INT_MIN;
+
+		//i左侧总共需要扔出多少件衣服 
+		//总共有i个洗衣机 需要i * avg件衣服
+		//总共有leftSum件衣服
+		int leftOut = leftSum - i * avg;
+
+		//i右侧总共需要扔出多少件衣服 
+		//总共machines.size() - 1 - (i + 1) + 1个洗衣机
+		//右侧总共需要(machines.size() - 1 - (i + 1) + 1) * avg件衣服
+		//右侧总共有sum - leftSum - machines[i]件衣服 两者的差值就是需要扔出的衣服数量
+		int rightOut = sum - leftSum - machines[i] - (machines.size() - i - 1) * avg;
+
+		//左右两侧都负 每次只能往一个方向扔衣服
+		if (leftOut <= 0 && rightOut <= 0) {
+			curMin = abs(leftOut) + abs(rightOut);
+		}
+		//左右两侧都正 可以从两侧同时往中间扔
+		//左右两侧一侧为正 一侧为负  
+		else {
+			curMin = max(abs(leftOut), abs(rightOut));
+		}
+
+		minMove = max(curMin, minMove);
+
+		//左侧累加和加上当前数字
+		leftSum += machines[i];
+	}
+
+	return minMoves;
+}
+
+int main() {
+	vector<int> a = { 1,0,5 };
+	cout << findMinMoves(a) << endl;
+	system("pause");
+	return 0;
+} 
