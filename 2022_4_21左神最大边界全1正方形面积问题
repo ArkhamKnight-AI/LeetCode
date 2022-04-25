@@ -1,0 +1,78 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//返回矩阵中最大正方形边长长度
+int maxAllOneBorder(vector<vector<int>> m) {
+
+	int M = m.size();
+	int N = m[0].size();
+
+	vector<vector<int>> right(M, vector<int>(N));
+	vector<vector<int>> down(M, vector<int>(N));
+
+	for (int row = 0; row < M; row++) {
+		right[row][N - 1] = m[row][N - 1];
+	}
+
+	for (int col = 0; col < N; col++) {
+		down[M - 1][col] = m[M - 1][col];
+	}
+
+	//生成right矩阵 从上到下 从右往左写
+	for (int row = 0; row < M; row++) {
+		for (int col = N - 2; col >= 0; col--) {
+			if (m[row][col] == 1) {
+				if (m[row][col + 1] != 0) right[row][col] = right[row][col + 1] + 1;
+				else {
+					right[row][col] = 1;
+				}
+			}
+			else {
+				right[row][col] = 0;
+			}
+		}
+	}
+  
+	//生成down矩阵 从下到上 从左往右写
+	for (int row = M - 2; row >= 0; row--) {
+		for (int col = 0; col < N; col++) {
+			if (m[row][col] == 1) {
+				if (m[row + 1][col] != 0) down[row][col] = down[row + 1][col] + 1;
+				else {
+					down[row][col] = 1;
+				}
+			}
+			else {
+				down[row][col] = 0;
+			}
+		}
+	}
+
+	//枚举每一个点作为顶点
+	int maxBorder = 0;
+	for (int row = 0; row < M; row++) {
+		for (int col = 0; col < N; col++) {
+			 
+			//枚举边长
+			for (int border = 1; border <= min(M - row, N - col); border++) {
+				//左上角点(row,col) 边长为border
+
+				//验证正方形的四条边 是不是值都为1 是并列关系 不是嵌套关系
+				//如何使用不遍历的方法验证是不是边界都为1?
+				//使用预处理技巧 构造right和down矩阵 
+				if (right[row][col] >= border && down[row][col] >= border && down[row][col + border - 1] >= border && right[row + border - 1][col] >= border) maxBorder = max(maxBorder, border);
+			} 
+		}
+	}
+	return maxBorder * maxBorder;
+}
+
+
+int main() {
+	vector<vector<int>>m = { {1,0,1,1,1},{1,0,1,0,1},{1,1,1,1,1},{1,0,1,0,0} };
+	cout << maxAllOneBorder(m) << endl;
+	system("pause");
+	return 0;
+}
