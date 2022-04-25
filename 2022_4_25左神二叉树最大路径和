@@ -1,0 +1,42 @@
+从根节点开始 到叶节点 每个节点一个权值 找和最大的那条路径
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;	
+	TreeNode(int v) :val(v), left(nullptr), right(nullptr) {}
+};
+
+//树形dp
+int process(TreeNode* x) {
+	//来到叶节点 直接返回叶节点的值
+	if (x->left == nullptr && x->right == nullptr) return x->val;
+
+	int next = INT_MIN;
+
+	if (x->left != nullptr) {
+		next = process(x->left);
+	}
+
+	if (x->right != nullptr) {
+		next = max(next, process(x->right));
+	}
+
+
+	return next + x->val;
+}
+
+int maxTreePath(TreeNode* head) {
+	if (head == nullptr) return 0;
+	return process(head);
+}
+
+int main() {
+	
+	system("pause");
+	return 0;
+} 
