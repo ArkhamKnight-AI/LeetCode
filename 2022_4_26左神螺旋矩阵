@@ -1,0 +1,83 @@
+LeetCode54
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//螺旋矩阵打印 左上角 (a, b) 右下角 (c, d)
+void printEdge(vector<vector<int>>& matrix, vector<int>& res, int a, int b, int c, int d) {
+	if (a == c) {
+		while (b <= d) {
+			res.push_back(matrix[a][b]);
+			b++;
+		}
+	}
+
+	//左上角点和右上角点在同一 列 就把这一列打印出来
+	else if (b == d) {
+		while (a <= c) {
+			res.push_back(matrix[a][b]);
+			a++;
+		}
+	}
+
+	//既不在同一行 也不在同一列
+	//先从左向右打印
+	else {
+		int curRow = a;
+		int curCol = b;
+		//打印a行中的所有内容
+		while (curCol < d) {
+			res.push_back(matrix[curRow][curCol]);
+			curCol++;
+		}
+
+
+		while (curRow < c) {
+			res.push_back(matrix[curRow][curCol]);
+			curRow++;
+		}
+
+
+		while (curCol > b) {
+			res.push_back(matrix[curRow][curCol]);
+			curCol--;
+		}
+
+		while (curRow > a) {
+			res.push_back(matrix[curRow][curCol]);
+			curRow--;
+		}
+	}
+}
+
+vector<int> spiralOrder(vector<vector<int>>& matrix) {
+	int a = 0;
+	int b = 0;
+	int c = matrix.size() - 1;
+	int d = matrix[0].size() - 1;
+
+	vector<int> res;
+
+	while (a <= c && b <= d) {
+		printEdge(matrix, res, a, b, c, d);
+		a++;
+		b++;
+		c--;
+		d--;
+	}
+
+	return res;
+}
+
+int main() {
+	vector<vector<int>> mat = { {0, 1, 2, 3}, {4, 5, 6, 7}, {8, 9, 10, 11} };
+	vector<int> res = spiralOrder(mat);
+	for (auto i : res) {
+		cout << i << " ";
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}      
