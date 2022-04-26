@@ -1,0 +1,78 @@
+LeetCode 59 生成螺旋矩阵
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//打印每一圈的数 左上角点(a, a) 右下角点(b, b) 上一圈最后一个数是pre 矩阵大小为n*n 
+//返回记录到了哪个数
+int generateEdge(vector<vector<int>>& matrix, int a, int b, int pre, int n) {
+	//来到中心点位置时
+	if (a == b) matrix[a][b] = n * n;
+
+	//一般情况
+	int curRow = a;
+	int curCol = a;
+
+	//当前位置的数是什么
+	int curNum = pre;
+
+	while (curCol < b) {
+		matrix[curRow][curCol] = curNum + 1;
+		curNum++;
+		curCol++;
+	}
+
+	while (curRow < b) {
+		matrix[curRow][curCol] = curNum + 1;
+		curNum++;
+		curRow++;
+	}
+
+	while (curCol > a) {
+		matrix[curRow][curCol] = curNum + 1;
+		curNum++;
+		curCol--;
+	}
+
+	while (curRow > a) {
+		matrix[curRow][curCol] = curNum + 1;
+		curNum++;
+		curRow--;
+	}
+
+	return curNum;
+}
+
+//生成大小为n的螺旋矩阵 左上角 (a, b) 右下角 (c, d)
+vector<vector<int>> generateMatrix(int n) {
+	if (n < 1) return {};
+	if (n == 1) return { {1} };
+
+	int a = 0;
+	int b = n - 1;
+
+	vector<vector<int>> matrix(n, vector<int>(n));
+
+	int pre = 0;
+
+	while (a <= b) {
+		pre = generateEdge(matrix, a, b, pre, n);
+		a++;
+		b--;
+	}
+
+	return matrix;
+}
+int main() {
+	vector<vector<int>> mat = generateMatrix(4);
+	for (int i = 0; i < mat.size(); i++) {
+		for (int j = 0; j < mat[0].size(); j++) {
+			cout << mat[i][j] << "";
+		}
+		cout << endl;
+	}
+	system("pause");
+	return 0;
+}      
