@@ -1,0 +1,61 @@
+注意：行和列的更新顺序！
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//打印斜线的函数
+void printLine(vector<vector<int>>& matrix, int aR, int aC, int bR, int bC, bool fromUp) {
+	//从右上角打印到左下角
+	if (fromUp) {
+		while (aR <= bR) {
+			cout << matrix[aR++][aC--] << " ";
+		}
+	}
+
+	//从左下角打印到右上角
+	if (!fromUp) {
+		while (bR >= aR) {
+			cout << matrix[bR--][bC++] << " ";
+		}
+	}
+}
+
+//zigzag打印矩阵
+void printMatrix(vector<vector<int>>& matrix) {
+	if (matrix.size() < 1 && matrix[0].size() < 1) return;
+
+	//终止位置
+	int endR = matrix.size() - 1;
+	int endC = matrix[0].size() - 1;
+
+	//定义两个滑块 A从左向右动到不能再动 往下动
+	//B从上往下动到不能再动 往右动
+	int aR = 0;
+	int aC = 0;
+	int bR = 0;
+	int bC = 0;
+	
+	bool fromUp = 0;
+
+	while (aR <= endR && bC <= endC) {
+		printLine(matrix, aR, aC, bR, bC, fromUp);
+
+		//更新aR aC bR bC
+		//bC和aR要在bR和aC更新前更新 否则 先更新了 bC或aR 就会导致漏打印一行
+		aR = aC == endC ? aR + 1 : aR;
+		aC = aC == endC ? aC : aC + 1;
+		bC = bR == endR ? bC + 1 : bC;
+		bR = bR == endR ? bR : bR + 1;
+		fromUp = !fromUp;
+	}
+	cout << endl;
+}
+
+int main() {
+	vector<vector<int>> matrix = { {0, 1, 2, 3},{4, 5, 6, 7},{8, 9, 10, 11} };
+	printMatrix(matrix);
+	system("pause");
+	return 0;
+}      
