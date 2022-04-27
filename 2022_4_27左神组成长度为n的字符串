@@ -1,0 +1,56 @@
+注意：判断是否是质数的方法
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<math.h>
+using namespace std;
+
+//操作1：(1)m = s; (2)s = s + s;
+//操作2：s = s + m;
+//给定一个正数n 初始m = s = "a" 求多少次操作 可以使 s 到达长度n
+
+
+//判断一个数是否为质数
+bool isPrime(int n) {
+	if (n <= 2) return true;
+
+	//平方根
+	int base = (int)sqrt((double)n);
+	
+	for (int i = 2; i <= base; i++) {
+		if (n % i == 0) return false;
+	}
+
+	return true;
+}
+
+
+//获得一个数所有质数因子之和
+int minOps(int n) {
+	//如果是质数 调用n-1次操作2
+	if (isPrime(n)) return n - 1;
+
+	//质数之和
+	int sum = 0;
+	//有几个质数因子
+	int count = 0;
+
+	//从2开始算质数因子
+	for (int i = 2; i <= n; i++) {
+		while (n % i == 0) {
+			sum += i;
+			count++;
+			n = n / i;
+		}
+	}
+
+	return sum - count;
+}
+
+
+int main() {
+	cout << minOps(21) << endl;
+	system("pause");
+	return 0;
+}      
