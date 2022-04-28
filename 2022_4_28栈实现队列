@@ -1,0 +1,61 @@
+注意:
+1.push栈若向pop栈倒东西 则一次性倒完
+2.pop栈中有东西，push栈一定不向pop栈倒东西
+
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<stack>
+using namespace std;
+
+class MyStack {
+public:
+	//push栈
+	stack<int> pushStack;
+
+	//pop栈
+	stack<int> popStack;
+
+
+	MyStack() {
+
+	}
+
+	//每次push完一个数据就看看能不能倒数据
+	void push(int x) {
+		pushStack.push(x);
+		dao();
+	}
+
+	//每次pop 应该先倒数据
+	int pop() {
+		dao();
+		int popTop = popStack.top();
+		popStack.pop();
+		return popTop;
+	}
+
+	int top() {
+		dao();
+		return popStack.top();
+	}
+
+	bool empty() {
+		return (pushStack.empty() && popStack.empty()) ? true : false;
+	}
+
+	//从push栈向pop栈倒数据
+	void dao() {
+		while (!pushStack.empty()) {
+			popStack.push(pushStack.top());
+			pushStack.pop();
+		}
+	}
+};
+
+int main() {
+	
+	system("pause");
+	return 0;
+}      
