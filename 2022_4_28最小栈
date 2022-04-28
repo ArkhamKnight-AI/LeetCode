@@ -1,0 +1,45 @@
+#include<iostream>
+#include<stack>
+using namespace std;
+
+class MinStack {
+public:
+	//数据栈
+	stack<int> data;
+	//存放最小值的栈
+	stack<int> minStack;
+
+	MinStack() {
+
+	}
+
+	void push(int val) {
+		data.push(val);
+		if (minStack.empty()) {
+			minStack.push(val);
+		}
+		else {
+			int curMin = val < minStack.top() ? val : minStack.top();
+			minStack.push(curMin);
+		}
+	}
+
+	void pop() {
+		data.pop();
+		minStack.pop();
+	}
+
+	int top() {
+		return data.top();
+	}
+
+	int getMin() {
+		return minStack.top();
+	}
+};
+
+int main() {
+	
+	system("pause");
+	return 0;
+}      
