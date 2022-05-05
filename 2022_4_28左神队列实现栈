@@ -1,0 +1,80 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<queue>
+using namespace std;
+
+class MyQueue {
+public:
+	queue<int> q1;
+	queue<int> q2;
+
+	MyQueue() {
+
+	}
+
+	void push(int x) {
+		if (q1.empty()) {
+			q2.push(x);
+		}
+		else {
+			q1.push(x);
+		}
+	}
+
+	int pop() {
+		//q1为空 则说明数据都在q2中 则将q2中 n - 1个元素放入q1中
+		//然后弹出q2中的元素
+		if (q1.empty()) {
+			while (q2.size() > 1) {
+				q1.push(q2.front());
+				q2.pop();
+			}
+
+			int stackTop = q2.front();
+			q2.pop();
+			return stackTop;
+		}
+
+		else {
+			while (q1.size() > 1) {
+				q2.push(q1.front());
+				q1.pop();
+			}
+
+			int stackTop = q1.front();
+			q1.pop();
+			return q1.front();
+		}
+	}
+
+	int peek() {
+		if (q1.empty()) {
+			while (q2.size() > 1) {
+				q1.push(q2.front());
+				q2.pop();
+			}
+
+			return q2.front();
+		}
+		else {
+
+			while (q1.size() > 1) {
+				q2.push(q1.front());
+				q1.pop();
+			}
+
+			return q1.front();
+		}
+	}
+
+	bool empty() {
+		return (q1.empty() && q2.empty()) ? true : false;
+	}
+};
+
+int main() {
+
+	system("pause");
+	return 0;
+}      
