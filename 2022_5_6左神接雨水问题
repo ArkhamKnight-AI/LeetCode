@@ -1,0 +1,51 @@
+流程优化策略:
+1.数据状况
+2.求解标准
+通过调整结算的顺序优化
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//接雨水
+int trap(vector<int>& height) {
+	if (height.size() <= 2) return 0;
+
+	//记录左侧和右侧的最大值
+	int leftMax = height[0];
+	int rightMax = height[height.size() - 1];
+
+	//使用左右指针指向左右两侧的数
+	int L = 1;
+	int R = height.size() - 2;
+
+	int res = 0;
+
+	while (L <= R) {
+		//右侧还没有遍历完 已经有比左侧大的了 说明瓶颈是左侧 此时用L位置的值更新res值
+		//更新的值就是用 0 和 leftMax - height[L] 中的最大值
+		if (leftMax <= rightMax) {
+			res += max(leftMax - height[L], 0);
+			leftMax = max(leftMax, height[L]);
+			L++;
+		}
+
+		//左侧还没有遍历完 已经有比右侧大的了 说明瓶颈是右侧 此时用R位置的值更新res值
+		//更新的值就是用 0 和 rightMax - height[L] 中的最大值
+		else {
+			res += max(rightMax - height[R], 0);
+			rightMax = max(rightMax, height[R]);
+			R--;
+		}
+	}
+
+	return res;
+}
+
+int main() {
+	vector<int> height = { 0,1,0,2,1,0,1,3,2,1,2,1 };
+	cout << trap(height) << endl;
+	system("pause");
+	return 0;
+}  
