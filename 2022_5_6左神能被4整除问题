@@ -1,0 +1,36 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+//
+//相邻两个数相乘为4的倍数
+bool dividedBy4(vector<int>& arr) {
+	//a-奇数 b-有1个2因子的数 c-有2个及以上2因子的数
+	int a = 0, b = 0, c = 0;
+	for (int i = 0; i < arr.size(); i++) {
+		if (arr[i] % 2 == 0) {
+			b++;
+			arr[i] /= 2;
+			if (arr[i] % 2 == 0) {
+				c++;
+				b--;
+			}
+		}
+
+		else {
+			a++;
+		}
+	}
+
+	if (b == 0) return a <= c + 1;
+	else {
+		return c >= a;
+	}
+}
+
+int main() {
+	vector<int> arr = { 1,1,1,14,4,4,4,4,4,4 };
+	cout << dividedBy4(arr) << endl;
+	system("pause");
+	return 0;
+}  
