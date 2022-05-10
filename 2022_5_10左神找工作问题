@@ -1,0 +1,101 @@
+注意：排序规则的编写
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+struct Job {
+	int hard;
+	int salary;
+	Job(int h = 0, int s = 0) : hard(h), salary(s) {}
+};
+
+//分配工作问题
+//写仿函数 难度低的放在前面 相同难度的情况下 工资高的放在前面
+template<class T>
+struct Cmp {
+	bool operator()(const T& s1, const T& s2) {
+		if (s1.hard == s2.hard) {
+			return s1.salary > s2.salary;
+		}
+
+		else {
+			return s1.hard < s2.hard;
+		}
+	}
+};
+
+//有序数组 找出小于等于某个数最右侧的数
+//给出bestJobs数组 选出那个小于等于他能力最右侧的工作的薪酬 并返回
+int mostRightLess(vector<Job>& arr, int ability) {
+	int L = 0;
+	int R = arr.size() - 1;
+	int index = -1;
+
+	while (L <= R) {
+		int mid = L + (R - L) / 2;
+		if (arr[mid].hard <= ability) {
+			index = mid;
+			L = mid + 1;
+		}
+		else {
+			R = mid - 1;
+		}
+	}
+
+	return arr[index].salary;
+}
+
+vector<int> bestJobs(vector<Job>& jobs, vector<int>& ability) {
+	//首先对jobs进行排序 难度低的放在前面 相同难度时 薪酬高的放在前面
+	sort(jobs.begin(), jobs.end(), Cmp<Job>());
+
+	vector<Job> bestJobs;
+	bestJobs.push_back(jobs[0]);
+	Job pre = jobs[0];
+
+	//选出最佳工作
+	for (int i = 0; i < jobs.size(); i++) {
+		//第一次过滤 相同难度选薪酬最高
+		//第二次过滤 难度递增 薪酬也递增
+		if (pre.hard != jobs[i].hard && pre.salary < jobs[i].salary) {
+            pre = jobs[i];
+			bestJobs.push_back(pre);
+		}
+	}
+
+	//每个人在bestJobs中选择不超过他能力的工作
+	vector<int> salaries;
+	for (int i = 0; i < ability.size(); i++) {
+		salaries.push_back(mostRightLess(bestJobs, ability[i]));
+	}
+
+	return salaries;
+}
+
+
+int main() {
+	int jobNum;
+	int friendNum;
+	cin >> jobNum >> friendNum;
+
+	//获得工作数组
+	vector<Job> jobs(jobNum);
+	for (int i = 0; i < jobNum; i++) {
+		cin >> jobs[i].hard >> jobs[i].salary;
+	}
+
+	//获得朋友能力数组
+	vector<int> abilities(friendNum);
+	for (int i = 0; i < friendNum; i++) {
+		cin >> abilities[i];
+	}
+
+	vector<int> res = bestJobs(jobs, abilities);
+	for (int i = 0; i < res.size(); i++) {
+		cout << res[i] << endl;
+	}
+	system("pause");
+	return 0;
+}  
