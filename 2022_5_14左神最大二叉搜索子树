@@ -1,0 +1,141 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<unordered_map>
+using namespace std;
+
+struct Node {
+	int val;
+	Node* left;
+	Node* right;
+
+	Node(int v) :val(v), left(nullptr), right(nullptr) {}
+};
+
+//找出一棵二叉树中最大搜索二叉树的头结点
+struct ReturnType {
+	Node* maxBSTHead; //最大二叉搜索树的头结点
+	bool isBST; //以x为头的节点是否是BST
+	int maxVal; //以x为头的节点的二叉树中的最大值
+	int minVal; //以x为头的节点的二叉树中的最小值
+	int maxBSTSize; //最大的BST的节点个数
+	ReturnType(Node* head, bool is, int ma, int mi, int size) {
+		maxBSTHead = head;
+		isBST = is;
+		maxVal = ma;
+		minVal = mi;
+		maxBSTSize = size;
+	}
+};
+
+
+ReturnType* process1(Node* x) {
+	//base case->x为空节点
+	if (x == nullptr) {
+		return nullptr;
+	}
+
+
+	int maxVal = x->val;
+	int minVal = x->val;
+
+	ReturnType* leftInfo = process1(x->left);
+	ReturnType* rightInfo = process1(x->right);
+
+	//生成最大值与最小值信息
+	if (leftInfo != nullptr) {
+		maxVal = max(maxVal, leftInfo->maxVal);
+		minVal = min(minVal, leftInfo->minVal);
+	}
+
+	if (rightInfo != nullptr) {
+		maxVal = max(maxVal, rightInfo->maxVal);
+		minVal = min(minVal, rightInfo->minVal);
+	}
+
+	//生成maxBSTSize和maxBSTHead
+	//可能性1与可能性2的罗列
+	int maxBSTSize = 0;
+	Node* maxBSTHead = nullptr;
+	if (leftInfo != nullptr) {
+		maxBSTSize = max(maxBSTSize, leftInfo->maxBSTSize);
+		maxBSTHead = leftInfo->maxBSTHead;
+	}
+
+	//只有在rightInfo->maxBSTSize > maxBSTSize时 才需要更新maxBSTSize和maxBSTHead的信息
+	if (rightInfo != nullptr && rightInfo->maxBSTSize > maxBSTSize) {
+		maxBSTSize = max(maxBSTSize, rightInfo->maxBSTSize);
+		maxBSTHead = rightInfo->maxBSTHead;
+	}
+
+	bool isBST = false;
+	//可能性3 以x为头的整棵树是一棵搜索二叉树
+	//第一层判断 左树和右树是BST
+	if ((leftInfo == nullptr || leftInfo->isBST) && (rightInfo == nullptr || rightInfo->isBST)) {
+		//第二层判断 以x为头的整棵树是否可以成为搜索二叉树
+		if ((leftInfo == nullptr || leftInfo->maxVal < x->val) && (rightInfo == nullptr || rightInfo->minVal > x->val)) {
+			isBST = true;
+			maxBSTSize = (leftInfo == nullptr ? 0 : leftInfo->maxBSTSize) + 1 + (rightInfo == nullptr ? 0 : rightInfo->maxBSTSize);
+			maxBSTHead = x;
+		}
+	}
+
+	ReturnType* res = new ReturnType(maxBSTHead, isBST, maxVal, minVal, maxBSTSize);
+	return res;
+}
+
+Node* maxBST1(Node* root) {
+	if (root == nullptr) return nullptr;
+	return process1(root)->maxBSTHead;
+}
+
+
+//另一种写法
+ReturnType process2(Node* x) {
+	if (x == nullptr) {
+		ReturnType res(nullptr, true, INT_MIN, INT_MAX, 0);
+		return res;
+	}
+
+	ReturnType leftInfo = process2(x->left);
+	ReturnType rightInfo = process2(x->right);
+
+	//生成最大最小值信息
+	int maxVal = max(x->val, max(leftInfo.maxVal, rightInfo.maxVal));
+	int minVal = min(x->val, min(leftInfo.minVal, rightInfo.minVal));
+
+	//可能性1和可能性2
+	int maxBSTSize = 0;
+	Node* maxBSTHead = nullptr;
+
+	maxBSTSize = max(leftInfo.maxBSTSize, rightInfo.maxBSTSize);
+	maxBSTHead = leftInfo.maxBSTSize > rightInfo.maxBSTSize ? leftInfo.maxBSTHead : rightInfo.maxBSTHead;
+
+	//可能性3
+	bool isBST = false;
+	if (leftInfo.isBST && rightInfo.isBST && leftInfo.maxVal < x->val && rightInfo.minVal > x->val) {
+		isBST = true;
+		maxBSTHead = x;
+		maxBSTSize = leftInfo.maxBSTSize + 1 + rightInfo.maxBSTSize;
+	}
+
+	ReturnType res(maxBSTHead, isBST, maxVal, minVal, maxBSTSize);
+	return res;
+}
+
+Node* maxBST2(Node* root) {
+	if (root == nullptr) return nullptr;
+	return process2(root).maxBSTHead;
+}
+
+int main() {
+	Node head(0);
+	head.left = new Node(2);
+	head.right = new Node(5);
+	head.left->left = new Node(1);
+	head.left->right = new Node(3);
+	Node* res = maxBST2(&head);
+	cout << res->val << endl;
+	system("pause");
+	return 0;
+}  
