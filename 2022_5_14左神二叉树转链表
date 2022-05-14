@@ -1,0 +1,74 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<unordered_map>
+using namespace std;
+
+struct Node {
+	int val;
+	Node* left;
+	Node* right;
+
+	Node(int v) :val(v), left(nullptr), right(nullptr) {}
+};
+
+//搜索二叉树转为双向链表
+struct ReturnType {
+	Node* start; //开始节点
+	Node* end; //结束节点
+
+	ReturnType(Node* s, Node* e) : start(s), end(e){}
+};
+
+
+ReturnType process(Node* x) {
+	//如果该节点为空 则start和end均为nullptr
+	if (x == nullptr) {
+		ReturnType res(nullptr, nullptr);
+		return res;
+	}
+
+	//leftInfo和rightInfo中存放的本质上是树的节点
+	ReturnType leftInfo = process(x->left);
+	ReturnType rightInfo = process(x->right);
+
+	//如果左侧的end不为空 说明这棵树可以连向x节点
+	if (leftInfo.end != nullptr) {
+		//注意这里的写法 把right认为是next
+		leftInfo.end->right = x;
+	}
+
+	//双向链表 要双向链接
+	x->left = leftInfo.end;
+	x->right = rightInfo.start;
+
+	if (rightInfo.start != nullptr) {
+		//把left认为是last
+		rightInfo.start->left = x;
+	}
+
+	//注意写控制条件 如果整棵左树就是空的 那么双向链表的头是x 此时就返回头x
+	//如果整棵右树就是空的 那么双向链表的尾是x 此时就返回尾x
+	ReturnType res(x->left == nullptr ? x : leftInfo.start, x->right == nullptr ? x : rightInfo.end);
+	return res;
+}
+
+Node* treeToDoublyList(Node* root) {
+	if (root == nullptr) return nullptr;
+
+	return process(root).start;
+}
+
+
+int main() {
+	Node head(4);
+	head.left = new Node(2);
+	head.right = new Node(5);
+	head.left->left = new Node(1);
+	head.left->right = new Node(3);
+	Node* res = treeToDoublyList(&head);
+	cout << res->val << endl;
+	cout << res->right->val << endl;
+	system("pause");
+	return 0;
+}  
