@@ -1,0 +1,56 @@
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+//通过先序遍历和中序遍历获得后序遍历
+void process(vector<int>& pre, vector<int>& in, vector<int>& post, int prei, int prej, int ini, int inj, int posti, int postj);
+vector<int> preInToPost(vector<int>& pre, vector<int>& in) {
+	vector<int> post(pre.size());
+
+	process(pre, in, post, 0, pre.size() - 1, 0, in.size() - 1, 0, post.size() - 1);
+	return post;
+}
+
+void process(vector<int>& pre, vector<int>& in, vector<int>& post, int prei, int prej, int ini, int inj, int posti, int postj) {
+	//越界 其实可以合在一起
+	/*if (prei > prej) {
+		return;
+	}*/
+
+	//base case -> pre中部分数组的大小为1 这个节点相当于是头节点了 此时 直接让其等于后序遍历数组的最后一个元素
+	if (prei == prej) {
+		post[postj] = pre[prei];
+		return;
+	}
+
+	//一般情况
+	//先设置头结点
+	post[postj] = pre[prei];
+
+	//在中序遍历数组中找到pre中的头结点 则从ini开始 到 find - 1 就是左树 find + 1 到 inj就是右树
+	int find = ini;
+	for (; find <= inj; find++) {
+		if (in[find] == pre[prei]) {
+			break;
+		}
+	}
+
+	//设置左树
+	process(pre, in, post, prei + 1, prei + find - ini, ini, find - 1, posti, posti + find - ini - 1);
+	//设置右树
+	process(pre, in, post, prei + find - ini + 1, prej, find + 1, inj, posti + find - ini, postj - 1);
+}
+
+int main() {
+	vector<int> pre = { 1,2,4,5,3,6,7 };
+	vector<int> in = { 4,2,5,1,6,3,7 };
+
+	vector<int> post = preInToPost(pre, in);
+	for (int i = 0; i < post.size(); i++) {
+		cout << post[i] << " ";
+	}
+	cout << endl;
+	system("pause");
+	return 0;
+}
