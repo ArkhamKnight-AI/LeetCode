@@ -1,0 +1,61 @@
+#include<iostream>
+#include<vector>
+#include<string>
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+
+	TreeNode(int v) :val(v), left(nullptr), right(nullptr) {}
+};
+
+
+//以root为头的数在第level层 求以root为头的子树 最大深度
+//以root为头的子树一定是完全二叉树
+int depth(TreeNode* root, int level) {
+	while (root != nullptr) {
+		level++;
+		root = root->left;
+	}
+
+	//root来到的是 nullptr的位置 所以level要-1
+	return level - 1;
+}
+
+//递归过程 以root为头的数 在第level层 整棵树的高度为h
+//返回以root为头的数有多少节点
+int process(TreeNode* root, int level, int h) {
+	if (root == nullptr) return 0;
+
+	//如果来到这个节点的右树最大深度与整棵树的最大深度相同 说明这棵树左子树是满的 继续在右子树上递归
+  //这里要注意 是在右子树上判断 而不是在root上进行判断
+	if (depth(root->right, level + 1) == h) {
+		//以root->left为头总共有 2^(h - level) - 1个节点 加上root总共2^(h - level)个节点
+    //凡是涉及<<和>>运算符的地方一定要在整体打上括号
+		return ((1 << (h - level)) + process(root->right, level + 1, h));
+	}
+
+	//否则说明 右树一定是满的 只是层数少了1层 继续在左子树上递归
+	else {
+		return((1 << (h - level - 1)) + process(root->left, level + 1, h));
+	}
+}
+
+//求完全二叉树节点个数
+int countNodes(TreeNode* root) {
+	if (root == nullptr) return 0;
+
+	return process(root, 1, depth(root, 1));
+}
+
+int main() {
+	TreeNode root(1);
+	root.left = new TreeNode(2);
+	root.right = new TreeNode(3);
+	root.left->left = new TreeNode(4);
+	cout << countNodes(&root) << endl;
+	system("pause");
+	return 0;
+} 
