@@ -1,0 +1,39 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//调整 使得i位置放的是i+1这个数
+void modify(vector<int>& arr, int val) {
+	//把val-1位置上的数怼出来 放在正确的位置上
+	//在把val位置上的数怼出来 放在正确的位置上
+	while (arr[val - 1] != val) {
+		int temp = arr[val - 1];
+		arr[val - 1] = val;
+		val = temp;
+	}
+}
+
+//找arr中未出现过的数字
+void noExist(vector<int>& arr) {
+	if (arr.size() < 1) return;
+
+	for (auto i : arr) {
+		modify(arr, i);
+	}
+
+	for (int i = 0; i < arr.size(); i++) {
+		if (arr[i] != i + 1) {
+			//输出的是i+1 因为i+1本来应该放在arr[i]的位置上
+			cout << i + 1 << endl;
+		}
+	}
+}
+
+
+int main() {
+	vector<int> arr = { 3, 2, 1, 6, 2, 7, 5 };
+	noExist(arr);
+	system("pause");
+	return 0;
+} 
