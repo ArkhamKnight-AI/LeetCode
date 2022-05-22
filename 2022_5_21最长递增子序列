@@ -1,0 +1,105 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+//二分地找有序数组中大于某个数最左侧的位置 右边界是index
+int findMostLeft(vector<int>& nums, int rightbound, int num) {
+	int L = 0; 
+	int R = rightbound;
+	int index = -1;
+
+	while (L <= R) {
+		int mid = L + (R - L) / 2;
+		if (nums[mid] >= num) {
+			index = mid;
+			R = mid - 1;
+		}
+		else {
+			L = mid + 1;
+		}
+	}
+
+	return index;
+}
+
+//O(NlogN)解法 用最小结尾构造单调性
+int lengthOfLIS1(vector<int>& nums) {
+	if (nums.size() < 2) return nums.size();
+
+	//长度为i+1的子序列 最小结尾是多少
+	vector<int> ends(nums.size());
+	vector<int> dp(nums.size());
+
+	//ends数组的右边界 从0开始算
+	int rightbound = 0;
+
+	ends[0] = nums[0];
+	dp[0] = 1;
+
+	for (int i = 1; i < nums.size(); i++) {
+		//在ends数组中二分地找大于等于某个数最左侧的位置
+		int index = findMostLeft(nums, rightbound, nums[i]);
+
+		//如果index = -1 说明当前数 比之前所有数都大 那么就将ends数组扩容
+		if (index == -1) {
+			rightbound++;
+			ends[rightbound] = nums[i];
+		}
+		//否则说明找到了大于等于某个数最左侧的位置 用nums[i]更新ends[index]
+		else {
+			ends[index] = nums[i];
+		}
+
+		//找ends数组中连同自己 左侧有多少数 更新dp[i]
+		//如果index不是-1 则dp[i]是nums[i]的下标+1
+		if (index != -1) {
+			dp[i] = index + 1;
+		}
+		//如果index是-1 则dp[i]是右边界的index+1
+		else {
+			dp[i] = rightbound + 1;
+		}
+	}
+
+	int res = INT_MIN;
+	for (int i = 0; i < dp.size(); i++) {
+		res = max(res, dp[i]);
+	}
+
+	return res;
+}
+
+//O(N²)
+int lengthOfLIS2(vector<int>& nums) {
+	if (nums.size() < 2) return nums.size();
+
+	vector<int> dp(nums.size());
+	dp[0] = 1;
+	int longestRes = INT_MIN;
+
+	for (int i = 1; i < nums.size(); i++) {
+		int longestPre = INT_MIN;
+		for (int j = 0; j < i; j++) {
+			if (nums[i] > nums[j]) {
+				longestPre = max(longestPre, dp[j]);
+			}
+		}
+
+		dp[i] = (longestPre == INT_MIN ? 0 : longestPre) + 1;
+	}
+
+	for (int i = 0; i < nums.size(); i++) {
+		longestRes = max(dp[i], longestRes);
+	}
+
+	return longestRes;
+}
+
+
+int main() {
+	vector<int> arr = { 10,9,2,5,3,7,101,18 };
+	cout << lengthOfLIS2(arr) << endl;
+	system("pause");
+	return 0;
+} 
