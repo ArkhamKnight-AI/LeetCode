@@ -1,0 +1,53 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+using namespace std;
+
+int minCost(string s1, string s2, int add, int del, int replace) {
+	int row = s1.size();
+	int col = s2.size();
+
+	//从str1转换为str2的最少代价 dp[i][j]表示s1前缀长度为i的字符串编辑为s2前缀长度为j的字符串的最低代价
+	//加1是因为要将前缀长度为0 即空串包含进去
+	//行数是s1.size() 列数是s2.size()
+	vector<vector<int>> dp(s1.size() + 1, vector<int>(s2.size() + 1));
+	dp[0][0] = 0;
+
+	for (int i = 1; i <= row; i++) {
+		dp[i][0] = i * del;
+	}
+
+	for (int i = 1; i <= col; i++) {
+		dp[0][i] = i * add;
+	}
+
+	for (int i = 1; i <= row; i++) {
+		for (int j = 1; j <= col; j++) {
+			//情况4 s1[i - 1] == s2[j - 1] 直接拷贝即可 不需要代价
+			if (s1[i - 1] == s2[j - 1]) {
+				dp[i][j] = dp[i - 1][j - 1];
+			}
+
+			//情况3 s1[i - 1] != s2[j - 1] 需要一次替换操作 代价为replace
+			else {
+				dp[i][j] = dp[i - 1][j - 1] + replace;
+			}
+
+			//可能性1 和 可能性2 一直存在 看它们和当前的dp哪个小就取哪个
+			//情况1 str1[0...i-2] -> str2[0...j-2, j-1]的代价为dp[i - 1][j] 然后删除str1[i - 1]的代价为del
+			dp[i][j] = min(dp[i][j], dp[i - 1][j] + del);
+			//情况2 str1[0...i-2, i-1] -> str2[0...j-2]的代价为dp[i][j - 1] 然后加上str2[i - 1]的代价为add
+			dp[i][j] = min(dp[i][j], dp[i][j - 1] + add);
+		}
+	}
+
+	//返回右下角的值
+	return dp[row][col];
+}
+
+int main() {
+	cout << minCost("abc", "abc", 5, 3, 100) << endl;
+	system("pause");
+	return 0;
+} 
