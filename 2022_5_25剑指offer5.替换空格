@@ -1,0 +1,19 @@
+class Solution {
+public:
+    string replaceSpace(string s) {
+        if(s.size() < 2) return s;
+
+        string res;
+        for(auto i : s){
+            if(i == ' '){
+                res += "%20";
+            }
+
+            else{
+                res += i;
+            }
+        }
+
+        return res;
+    }
+};
