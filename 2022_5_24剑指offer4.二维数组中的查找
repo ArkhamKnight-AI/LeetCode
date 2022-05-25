@@ -1,0 +1,33 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+//在二维数组中找一个数
+bool findNumberIn2DArray(vector<vector<int>>& matrix, int target) {
+	if (matrix.empty() || matrix[0].empty()) {
+		return false;
+	}
+
+	int row = 0;
+	int col = matrix[0].size() - 1;
+
+	//从右上角开始寻找
+	//确保不越界
+	while (row <= matrix.size() - 1 && col >= 0) {
+		if (matrix[row][col] == target) {
+			return true;
+		}
+
+		else if(matrix[row][col] > target) {
+			col--;
+		}
+
+		else{
+			row++;
+		}
+	}
+
+	//越界了还找不到 说明没有
+	return false;
+}
+
