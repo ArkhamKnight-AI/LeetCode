@@ -1,0 +1,57 @@
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+using namespace std;
+
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+TreeNode* process(unordered_map<int, int>& map, vector<int>& preorder, vector<int>& inorder, int pl, int pr, int il, int ir) {
+	//左边界大于右边界 越界返回nullptr
+	if (pl > pr) return nullptr;
+
+	//先建立头结点
+	TreeNode* root = new TreeNode(preorder[pl]);
+
+	//找到先序遍历头结点 在 中序遍历数组中的位置
+	int pos = map[root->val];
+
+	//在左子树和右子树上递归
+	//求左子树
+	//因为中序遍历是 左 头 右 所以 在中序遍历数组中找到先序遍历的头位置为pos 那么il-pos是左子树 pos+1-ir是右子树
+	//在中序遍历中的位置是pos 先序遍历数组从pl + 1出发 左子树的长度为pos - il  所以 pl + 1 + pos - il就是左子树结束的位置
+	TreeNode* left = process(map, preorder, inorder, pl + 1, pl + pos - il, il, pos - 1);
+	TreeNode* right = process(map, preorder, inorder, pl + pos - il + 1, pr, pos + 1, ir);
+	root->left = left;
+	root->right = right;
+
+	return root;
+}
+
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+	if (preorder.size() < 1) return nullptr;
+
+	//记录中序遍历中每个数出现的位置
+	unordered_map<int, int> map;
+	for (int i = 0; i < inorder.size(); i++) {
+		map[inorder[i]] = i;
+	}
+	
+	return process(map, preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+}
+
+int main() {
+	vector<int> preorder = { 3, 9, 20, 15, 7 };
+	vector<int> inorder = { 9, 3, 15, 20, 7 };
+
+	TreeNode* head = buildTree(preorder, inorder);
+	cout << '0k' << endl;
+
+	system("pause");
+	return 0;
+}
+
