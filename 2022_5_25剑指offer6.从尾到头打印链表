@@ -1,0 +1,31 @@
+注意：vector<int>(res.rbegin(), res.rend())
+语法含义是构造一个新的vector，(res.rbegin(), res.rend())表示把从尾到头遍历的结果放入新的vector<int>中
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+struct ListNode {
+	int val;
+	ListNode* next;
+	ListNode(int v) : val(v), next(nullptr) {}
+};
+
+vector<int> reversePrint(ListNode* head) {
+	if (head == nullptr) return {};
+
+	vector<int> res;
+	
+	while (head != nullptr) {
+		res.push_back(head->val);
+		head = head->next;
+	}
+
+	//逆序数组
+	return vector<int>(res.rbegin(), res.rend());
+}
+
+int main() {
+
+}
+
