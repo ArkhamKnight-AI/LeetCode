@@ -1,0 +1,19 @@
+注意:位运算的优先级和括号的位置
+
+#include<iostream>
+using namespace std;
+
+bool is2Power(int n) {
+	return (n & (n - 1)) == 0;
+}
+
+bool is4Power(int n) {
+	return (n & (n - 1)) == 0 && (n & 0x55555555) != 0;
+}
+
+int main() {
+	cout << is2Power(3) << endl;
+	cout << is4Power(4) << endl;
+	system("pause");
+	return 0;
+}
