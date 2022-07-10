@@ -1,0 +1,31 @@
+class Solution {
+public:
+   int minArray(vector<int>& numbers) {
+	int n = numbers.size() - 1;
+
+	//去除末尾重复元素后进行二分
+	while (n > 0 && numbers[0] == numbers[n]) n--;
+
+	//如果删完变成了单调递增序列
+	if (numbers[n] >= numbers[0]) {
+		return numbers[0];
+	}
+
+	int L = 0;
+	int R = numbers.size() - 1;
+	while (L < R) {
+		int mid = L + (R - L) / 2;
+		//答案在[L,...mid]范围内
+		if (numbers[mid] < numbers[R]) {
+			R = mid;
+		}
+		else if(numbers[mid] > numbers[R]){
+			L = mid + 1;
+		}
+		else{
+			R--;
+		}
+	}
+	return numbers[R];
+}
+};
