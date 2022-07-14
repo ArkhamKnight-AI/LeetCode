@@ -16,7 +16,9 @@ void reOrderArray(vector<int> &array) {
 		//缩小区间
 		while (i <= j && array[i] % 2 == 1) i++;
 		while (i <= j && array[j] % 2 == 0) j--;
-
+ 		
+		//如果此时i >= j 说明都在正确的位置了 不需要交换
+		//进行前面两次while后 i指向的数一定是偶数 j指向的一定是奇数
 		if (i < j) {
 			swap(array, i, j);
 		}
