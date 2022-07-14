@@ -1,0 +1,28 @@
+//判断有换无环 有环返回第一个入环节点 无环返回nullptr
+ListNode* findLoop(ListNode* head) {
+	if (head == nullptr || head->next == nullptr) return nullptr;
+	if (head->next->next == nullptr) {
+		return head->next = head ? head : nullptr;
+	}
+
+	ListNode* s = head->next;
+	ListNode* f = head->next;
+
+	while (s != f) {
+		if (f->next == nullptr || f->next->next == nullptr) {
+			return nullptr;
+		}
+
+		s = s->next;
+		f = f->next->next;
+	}
+
+	//慢指针不动 快指针回到头结点
+	f = head;
+	while (s != f) {
+		s = s->next;
+		f = f->next;
+	}
+
+	return s;
+}
