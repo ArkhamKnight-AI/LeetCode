@@ -1,0 +1,22 @@
+class Solution {
+public:
+    void mirror(TreeNode* root) {
+        if(root == nullptr) return; //空树直接返回
+        if(root->left == nullptr && root->right == nullptr) return; //左右均空返回
+        
+        //先交换root的左右两棵子树
+        TreeNode* temp = root->left;
+        root->left = root->right;
+        root->right = temp;
+        
+        //在左树继续递归
+        if(root->left){
+            mirror(root->left);
+        }
+        
+        //在右树继续递归
+        if(root->right){
+            mirror(root->right);
+        }
+    }
+};
