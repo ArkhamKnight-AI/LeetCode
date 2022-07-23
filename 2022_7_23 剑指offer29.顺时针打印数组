@@ -1,0 +1,61 @@
+class Solution {
+public:
+    vector<int> printMatrix(vector<vector<int>> matrix) {
+    if(matrix.size() < 1) return {};
+	vector<int> res;
+
+	int aR = 0, aC = 0;
+	int bR = matrix.size() - 1, bC = matrix[0].size() - 1; 
+
+	while (aR <= bR && aC <= bC) {
+		printEdge(matrix, res, aR++, aC++, bR--, bC--);
+	}
+	return res;
+}
+
+void printEdge(vector<vector<int>>& matrix, vector<int>& res, int aR, int aC, int bR, int bC){
+	//当左上角点和右下角点在同一行
+	if (aR == bR) {
+		for (int i = aC; i <= bC; i++) {
+			res.push_back(matrix[aR][i]);
+			//cout << matrix[aR][i] << " ";
+		}
+	}
+
+	//当左上角点和左下角点在同一列
+	else if (aC == bC) {
+		for (int i = aR; i <= bR; i++) {
+			res.push_back(matrix[i][aC]);
+			//cout << matrix[i][aC] << " ";
+		}
+	}
+
+	//普遍情况 打印最外面一圈
+	else {
+		int curR = aR;
+		int curC = aC;
+		//打印aR行内容 除去最后一个元素
+		while (curC != bC) {
+			res.push_back(matrix[curR][curC++]);
+			cout << matrix[curR][curC++] << " ";
+		}
+
+		//打印bC列内容 除去最后一个元素
+		while (curR != bR) {
+			res.push_back(matrix[curR++][curC]);
+			cout << matrix[curR++][curC] << " ";
+		}
+
+		while (curC != aC) {
+			res.push_back(matrix[curR][curC--]);
+			cout << matrix[curR][curC--] << " ";
+
+		}
+
+		while (curR != aR) {
+			res.push_back(matrix[curR--][curC]);
+			//cout << matrix[curR--][curC] << " ";
+		}
+	}
+}
+};
