@@ -1,0 +1,24 @@
+class Solution {
+public:
+    bool isPopOrder(vector<int> pushV, vector<int> popV) {
+    if(pushV.empty() && popV.empty()) return true;
+	if (pushV.empty() || popV.empty() || pushV.size() != popV.size()) return false;
+
+	//pop顺序的第一个元素
+	int popid = 0;
+
+	stack<int> s;
+
+	for (int i = 0; i < popV.size(); i++) {
+		s.push(pushV[i]);
+		//如果当前元素是当前popid的元素 就一直将它pop 然后更新popid+=1
+		while (!s.empty() && s.top() == popV[popid]) {
+			s.pop();
+			popid++;
+		}
+	}
+
+	if (s.empty()) return true;
+	return false;
+}
+};
