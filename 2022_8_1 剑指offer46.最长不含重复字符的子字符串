@@ -1,0 +1,35 @@
+#include<iostream>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+int longestSubstringWithoutDuplication(string s) {
+	if (s.size() <= 0) return 0;
+
+	//记录每个字符上次出现的位置
+	vector<int> last(256, -1);
+
+	//记录最大长度
+	int maxLength = 0;
+
+	//记录以i-1为结尾时的瓶颈是什么
+	int pre = -1;
+
+	//记录当前最长子序列的长度
+	int cur = 0;
+
+	for (int i = 0; i < s.size(); i++) {
+		//不用考虑那么多 只用考虑每次瓶颈的具体位置而不是长度
+		pre = max(pre, last[s[i]]);
+		cur = i - pre;
+		maxLength = max(maxLength, cur);
+		last[s[i]] = i;
+	}
+	return maxLength;
+}
+
+int main()
+{
+	cout << longestSubstringWithoutDuplication("pwwkew") << endl;
+	return 0;
+}
