@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int getNumberSameAsIndex(vector<int>& nums) {
+	int L = 0, R = nums.size() - 1;
+
+	while (L <= R) {
+		int mid = (L + R) >> 1;
+		if (nums[mid] == mid) {
+			return mid;
+		}
+
+		//mid位置的元素>mid 则mid向左的位置肯定都是错的
+		else if (nums[mid] > mid) {
+			R = mid - 1;
+		}
+
+		//mid位置的元素<mid 则mid右边的位置肯定全是错的
+		else {
+			L = mid + 1;
+		}
+	}
+
+	return -1;
+}
+};
