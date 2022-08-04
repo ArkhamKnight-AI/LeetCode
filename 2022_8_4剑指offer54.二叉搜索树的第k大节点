@@ -1,0 +1,25 @@
+class Solution {
+public:
+	TreeNode* res;
+
+	TreeNode* kthNode(TreeNode* root, int k) {
+		if (root == nullptr || k == 0) return nullptr;
+
+		process(root, k);
+
+		return res;
+	}
+
+	//中序遍历
+	void process(TreeNode* root, int& k) {
+		if (!root) return;
+
+		process(root->left, k);
+
+		k--;
+
+		if (!k) res = root;
+
+		process(root->right, k);
+	}
+};
