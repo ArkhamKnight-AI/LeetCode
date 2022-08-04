@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<int> findNumsAppearOnce(vector<int>& nums) {
+	if (nums.size() < 1) return {};
+
+	int sum = 0;
+
+	for (int i = 0; i < nums.size(); i++) {
+		sum ^= nums[i];
+	}
+
+    //找出最右侧的1
+	int k = 0;
+	while (!(sum >> k & 1)) {
+		k++;
+	}
+    
+    //求出第一个出现1次的数
+	int first = 0;
+	for(auto x: nums){
+	    if(x >> k & 1){
+	        first ^= x;
+	    }
+	}
+	
+	//将第一次出现一次的数first和sum异或就得到第二个出现一次的数
+	return vector<int>{first, sum^first};
+}
+};
