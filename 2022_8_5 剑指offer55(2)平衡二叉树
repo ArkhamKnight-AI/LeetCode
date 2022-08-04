@@ -1,0 +1,28 @@
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+	if (!root) return true;
+
+	return process(root).second;
+}
+
+//第一个参数表示右子树的高 第二个参数表示是否为平衡二叉树
+pair<int, bool> process(TreeNode* root) {
+	//空节点 高度为0 是平衡二叉树
+	if (!root) return { 0, true };
+
+	//否则向左树和右树要信息
+	auto leftInfo = process(root->left);
+	auto rightInfo = process(root->right);
+
+	//加工出当前节点的信息
+	bool balanced = false;
+	//加工出是否为平衡二叉树
+	if (leftInfo.second && rightInfo.second && abs(leftInfo.first - rightInfo.first) <= 1) balanced = true;
+
+	//加工出树的高度
+	int height = max(leftInfo.first, rightInfo.first) + 1;
+
+	return { height, balanced };
+}
+};
