@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int getMissingNumber(vector<int>& nums) {
+	int L = 0, R = nums.size() - 1;
+
+	while (L <= R) {
+		int mid = (L + R) >> 1;
+		//如果mid位置的元素!=mid 分3种情况 说明在左半边
+		if (nums[mid] != mid) {
+			//(1)如果mid-1在范围内 且nums[mid-1]=mid-1 说明mid就是要找的那个数
+			if (mid >= 1 && nums[mid - 1] == mid - 1) return mid;
+			//(2)如果越界了 说明就是mid这个元素
+			else if (mid == 0) return 0;
+			//(3)否则既不越界 且nums[mid-1]!=mid-1 在左半边寻找
+			else {
+				R = mid - 1;
+			}
+		}
+		
+		//如果mid位置元素和mid相等 继续在右半边寻找
+		else {
+			L = mid + 1;
+		}
+	}
+}
+};
