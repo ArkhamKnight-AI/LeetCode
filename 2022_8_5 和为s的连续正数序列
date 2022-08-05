@@ -1,0 +1,35 @@
+class Solution {
+public:
+    vector<vector<int>> findContinuousSequence(int sum) {
+	int small = 1, big = 2;
+
+	vector<vector<int>> res;
+
+	//终止条件是sum >= (sum + 1) / 2
+	while (small < (sum + 1) / 2) {
+		//算出这一轮从small加到big的和
+		int curSum = 0;
+		for (int i = small; i <= big; i++) {
+			curSum += i;
+		}
+
+		//如果等于sum 将其放入结果
+		if (curSum == sum) {
+			vector<int> cur;
+			for (int i = small; i <= big; i++) {
+				cur.push_back(i);
+			}
+			res.push_back(cur);
+			big++;
+		}
+
+		//如果小于sum 增加big
+		if (curSum < sum) big++;
+
+		//如果大于sum 增加small
+		if (curSum > sum) small++;
+	}
+
+	return res;
+}
+};
