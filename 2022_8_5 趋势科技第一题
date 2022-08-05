@@ -1,0 +1,58 @@
+#include<iostream>
+#include<vector>
+#include<string>
+#include<algorithm>
+#include<unordered_map>
+using namespace std;
+
+string token_replace(string my_template, vector<string>& keys, vector<string>& values) {
+	int index = 0;
+	unordered_map<string, string> map;
+
+	//判断是否要替换字符串
+	bool flag = true;
+
+	//构建好映射表
+	for (int i = 0; i < keys.size(); i++) {
+		map[keys[i]] = values[i];
+	}
+
+	string res = my_template;
+
+	for (int i = 0; i < res.size(); i++) {
+		if (res[i] == '%') {
+			if (i == res.size() - 1) break;
+			index = i + 1;
+			while (res[index] != '%') index++;
+
+			//取出前面的字符串
+			string prestr = res.substr(0, i);
+
+			//取出后面的字符串
+			string poststr = res.substr(index + 1, res.size() - index - 1);
+
+			//取出字符串
+			string subs = res.substr(i + 1, index - i - 1);
+
+			//(1)map中包含该键值对
+			if (map.find(subs) != map.end()) {
+				res = prestr + map[subs] + poststr;
+			}
+
+			//(2)map中不包含该键值对 则不管继续往下看
+			else continue;
+			cout << res << endl;
+		}
+	}
+
+	return res;
+}
+
+int main() {
+
+	string my_template = "%FILENAME%VIRUSNAME%ba%VIRUSNAME%FILENAME%";
+	vector<string> keys = { "SENDER", "RCPTS", "SUBJECT", "FILENAME", "VIRUSNAME", "ACTION" };
+	vector<string> values = { "abc@test.com", "test@company.com", "Test", "Myfile", "ICAN", "Delete" };
+	cout << token_replace(my_template, keys, values) << endl;
+	return 0;
+}
