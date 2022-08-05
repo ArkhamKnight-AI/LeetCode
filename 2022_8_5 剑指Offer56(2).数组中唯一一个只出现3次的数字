@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int findNumberAppearingOnce(vector<int>& nums) {
+	vector<int> sum(32);
+
+	//取出每一个数字的第i位 将他们相加
+	for (int i = 0; i < 32; i++) {
+		for (int j = 0; j < nums.size(); j++) {
+			sum[i] += ((nums[j] >> i) & 1);
+		}
+	}
+	
+	
+	int res = 0;
+	for (int i = 0; i < sum.size(); i++) {
+		//如果某一位的数加起来能被3整除 那么说明这一位就是0
+		if (sum[i] % 3 == 0) continue;
+		//如果不能整除 说明这个数这一位是1
+		else res += (1 << i);
+	}
+
+	return res;
+}
+};
