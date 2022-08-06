@@ -1,0 +1,26 @@
+class Solution {
+public:
+    vector<int> maxInWindows(vector<int>& nums, int k) {
+	deque<int> qmax;
+	int index = 0;
+
+	vector<int> res(nums.size() - k + 1);
+	qmax.push_back(0);
+
+	for (int i = 0; i < nums.size(); i++) {
+		while (!qmax.empty() && nums[i] >= nums[qmax.back()]) qmax.pop_back();
+
+		qmax.push_back(i);
+		
+		//把下标过期
+		if(qmax.front() == i - k) qmax.pop_front();
+
+		if (i >= k - 1) {
+			res[index++] = nums[qmax.front()];
+		}
+	}
+
+	return res;
+}
+
+};
