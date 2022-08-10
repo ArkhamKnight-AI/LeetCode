@@ -1,0 +1,41 @@
+class Solution {
+public:
+	vector<vector<int>> res;
+	vector<int> path;
+	vector<vector<int>> permutation(vector<int>& nums) {
+		if (nums.size() < 1) return {};
+
+		//首先将元素按从小到大排序
+		sort(nums.begin(), nums.end());
+
+		//给path预留空间
+		path.resize(nums.size());
+
+		//从遍历每一位
+		process(nums, 0, 0, 0);
+
+		return res;
+	}
+
+	//当前是nums数组中的第i位 
+	//如果当前元素和前一个元素相同 那么当前元素不能放在前一个元素的后面 用start记录起始位置 初始值为0 没有任何限制
+	//state是一个整型变量 其值本身没有任何含义 但是每一位记录了path中该位置是否存放了元素 初始值为0 没有任何限制
+	void process(vector<int>& nums, int i, int start, int state) {
+		if (i == nums.size()) {
+			res.push_back(path);
+			return;
+		}
+
+		//如果是第一个数 或者和前一个数不相等 那么放在哪儿都行
+		if (i == 0 || nums[i] != nums[i - 1]) start = 0;
+
+		//从start位置开始尝试放在每一个state对应的位为0的位置
+		for (int cur = start; cur < nums.size();cur++) {
+			//如果这个位上没有放过 则将当前数放上去并继续尝试
+			if (!((state >> cur) & 1)) {
+				path[cur] = nums[i];
+				process(nums, i + 1, cur + 1, state + (1 << cur));
+			}
+		}
+	}
+};
