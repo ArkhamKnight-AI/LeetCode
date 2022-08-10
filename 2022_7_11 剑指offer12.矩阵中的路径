@@ -1,0 +1,39 @@
+class Solution {
+public:
+//递归遍历 x, y是矩阵中的位置 length表示走了多少步
+bool process(vector<vector<char>>& matrix, int x, int y, int length, string& str) {
+	//如果不相等 直接返回false
+	if (matrix[x][y] != str[length]) return false;
+	//base case 如果已经到了
+	if (length == str.size() - 1) return true;
+
+	//定义方向数组 按照上->右->下->左的顺序定义
+	int dr[4] = { -1, 0, 1, 0 }, dc[4] = { 0, 1, 0, -1 };
+
+	//把当前位置x,y记录为一个没有出现过的字符
+	char temp = matrix[x][y];
+	matrix[x][y] = '*';
+	
+	for (int i = 0; i < 4; i++) {
+		int a = x + dr[i], b = y + dc[i];
+		if (a >= 0 && a < matrix.size() && b >= 0 && b < matrix[a].size()) {
+			if (process(matrix, a, b, length + 1, str)) return true;
+		}
+	}
+
+	//如果该路径不能为true 就将x,y位置的字符恢复为原来的字符 并返回false
+	matrix[x][y] = temp;
+	return false;
+}
+
+//矩阵中的路径
+bool hasPath(vector<vector<char>>& matrix, string &str) {
+	for (int i = 0; i < matrix.size(); i++) {
+		for (int j = 0; j < matrix[0].size(); j++) {
+			if (process(matrix, i, j, 0, str)) return true;
+		}
+	}
+	return false;
+}
+
+};
