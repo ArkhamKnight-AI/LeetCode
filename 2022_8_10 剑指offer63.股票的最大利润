@@ -1,0 +1,16 @@
+class Solution {
+public:
+    int maxDiff(vector<int>& nums) {
+    if(nums.size() < 1) return 0;
+	int minB = INT_MAX;
+	int maxProfit = INT_MIN;
+
+	for (int i = 0; i < nums.size(); i++) {
+		minB = min(minB, nums[i]);
+
+		maxProfit = max(maxProfit, nums[i] - minB);
+	}
+
+	return maxProfit;
+}
+};
