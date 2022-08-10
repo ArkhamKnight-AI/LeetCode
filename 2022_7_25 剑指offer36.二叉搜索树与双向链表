@@ -1,0 +1,50 @@
+class Solution {
+public:
+    pair<TreeNode*, TreeNode*> process(TreeNode* root) {
+	//如果是叶子节点 直接返回当前节点 因此返回值没有nullptr
+	if (!root->left && !root->right) return { root, root };
+
+	//加工root节点的信息
+	pair<TreeNode*, TreeNode*> rootInfo;
+
+	//如果左右子树都有
+	if (root->left && root->right) {
+		//向左树要信息
+		auto leftInfo = process(root->left);
+
+		//向右树要信息
+		auto rightInfo = process(root->right);
+
+		//链接左子树
+		leftInfo.second->right = root;
+		root->left = leftInfo.second;
+
+		//链接右子树
+		rightInfo.first->left = root;
+		root->right = rightInfo.first;
+
+		return { leftInfo.first, rightInfo.second };
+	}
+	
+	//有左子树无右子树
+	if (root->left && !root->right) {
+		auto leftInfo = process(root->left);
+		leftInfo.second->right = root;
+		root->left = leftInfo.second;
+		return { leftInfo.first, root };
+	}
+
+	//有右子树无左子树
+	if (root->right && !root->left) {
+		auto rightInfo = process(root->right);
+		rightInfo.first->left = root;
+		root->right = rightInfo.first;
+		return  { root, rightInfo.second };
+	}
+}
+
+TreeNode* convert(TreeNode* root) {
+	if (!root) return nullptr;
+	return process(root).first;
+}
+};
