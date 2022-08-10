@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int duplicateInArray(vector<int>& nums) {
+        int n = nums.size();
+         //先检查一遍 如果i位置的数<0或者>n-1 返回-1
+         for(int i = 0; i < n; i++){
+             if(nums[i] < 0 || nums[i] >= n) return -1;
+         }
+
+        for(int i = 0; i < n; i++)
+            //循环到i位置上放的数是i为止
+            while(i != nums[i]){
+                //发现了相同的数字 i位置上的数 和 nums[i]位置上的数相同
+                if(nums[i] == nums[nums[i]]){
+                    return nums[i];
+                }
+
+                //交换i位置的数和nums[i]位置的数 直到有一次找到重复元素或者放在了正确位置为止
+                //记录nums[i]位置上的数
+                int temp = nums[i];
+                //交换temp位置上的数和i位置上的数
+                nums[i] = nums[temp];
+                //将temp放在nums中temp的位置上
+                nums[temp] = temp;
+            }
+        }
+
+        return -1;
+    }
+};
