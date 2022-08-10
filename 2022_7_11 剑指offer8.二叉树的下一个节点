@@ -1,0 +1,29 @@
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        if (preorder.size() <= 0) return nullptr;
+        return process(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+}
+
+    //preorder->先序遍历数组 inorder->中序遍历数组 prel->先序遍历数组左边界 prer->先序遍历数组右边界 ...
+    TreeNode* process(vector<int>& preorder, vector<int>& inorder, int prel, int prer, int inl, int inr){
+        if(prel > prer) return nullptr;
+
+         TreeNode* root = new TreeNode(preorder[prel]);
+
+         //在中序遍历数组中找出头结点的位置
+         int inhead = inl;
+         for(int i = inl; i <= inr; i++){
+             if(inorder[i] == preorder[prel]){
+                 inhead = i;
+                 break;
+             }
+         }
+
+         //中序遍历数组中左子树下标为 inl~inhead - 1 右子树下标为 inhead + 1~inr
+        root->left = process(preorder, inorder, prel + 1, prel + inhead - inl, inl, inhead - 1);
+        root->right = process(preorder, inorder, prel + inhead - inl + 1, prer, inhead + 1, inr);
+
+        return root;
+    }
+};
