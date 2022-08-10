@@ -1,0 +1,21 @@
+class Solution {
+public:
+    bool hasSubtree(TreeNode* pRoot1, TreeNode* pRoot2) {
+        if(pRoot1 == nullptr || pRoot2 == nullptr) return false;
+        
+        //如果以pRoot2为头的子树是pRoot1为头的子树的一部分 返回true
+        if(process(pRoot1, pRoot2)) return true;
+        
+        //如果pRoot1左右子树中有一个与pRoot2为头的子树匹配上了也算匹配上了
+        return hasSubtree(pRoot1->left, pRoot2) || hasSubtree(pRoot1->right, pRoot2);
+    }
+    
+    bool process(TreeNode* head1, TreeNode* head2){
+        if(head2 == nullptr) return true; //p2为空说明当前分支没有点了 说明p2是p1的一部分了
+        
+        if(!head1 || head1->val != head2->val) return false;//当p1来到空了而p2不空时说明不匹配 或者p1->val和p2->val不匹配 返回false
+        
+        //在左右子树递归遍历 只有同时匹配才返回true
+        return process(head1->left, head2->left) && process(head1->right, head2->right);
+    }
+};
