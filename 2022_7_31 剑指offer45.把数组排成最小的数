@@ -1,0 +1,17 @@
+class Solution {
+public:
+    string printMinNumber(vector<int>& nums) {
+	string res;
+	sort(nums.begin(), nums.end(), [](int a, int b)->bool
+	{
+		string str1 = to_string(a), str2 = to_string(b);
+		return str1 + str2 < str2 + str1;
+	});
+
+	for (auto i : nums) {
+		res += to_string(i);
+	}
+
+	return res;
+}
+};
