@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        if(nums.size() <= 0) return -1;
+        int L = 0;
+        int R = nums.size() - 1;
+        while(L < R){
+            int mid = (L + R) >> 1;
+            //说明整个区间单调增 应该更新右侧区间
+            if(nums[mid] < nums[R]){
+                R = mid;
+            }
+            //说明最小值就在这[mid, R]个区间中
+            else if(nums[mid] > nums[R]){
+                L = mid + 1;
+            }
+            //如果nums[mid] == nums[R] 右端点不会影响结果 所以--去重
+            else{
+                R--;
+            }
+        }
+        
+        return nums[R];
+    }
+};
