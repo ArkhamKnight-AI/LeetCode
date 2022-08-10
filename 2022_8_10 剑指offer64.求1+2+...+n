@@ -1,0 +1,10 @@
+注意：使用判断语句的性质！A&&B 只有A为真才会判断B
+class Solution {
+public:
+    int getSum(int n) {
+        int res = n;
+        (n > 0) && (res += getSum(n - 1));
+        
+        return res;
+    }
+};
