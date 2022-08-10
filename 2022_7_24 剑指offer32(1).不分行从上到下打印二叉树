@@ -1,0 +1,25 @@
+class Solution {
+public:
+    vector<int> printFromTopToBottom(TreeNode* root) {
+	if (!root) return {};
+
+	queue<TreeNode*> q;
+	q.push(root);
+	vector<int> res;
+
+	while (!q.empty()) {
+		TreeNode* cur = q.front();
+		res.push_back(cur->val);
+		q.pop();
+		//先放左孩子 再放右孩子
+		if (cur->left) {
+			q.push(cur->left);
+		}
+		if (cur->right) {
+			q.push(cur->right);
+		}
+	}
+
+	return res;
+}
+};
