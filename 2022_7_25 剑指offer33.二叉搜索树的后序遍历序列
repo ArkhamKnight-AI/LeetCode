@@ -1,0 +1,32 @@
+class Solution {
+public:
+    //递归判断是sequence中l~r范围上否合法
+bool process(vector<int>& sequence, int l, int r) {
+	if (l >= r) return true;
+	//记录根节点的值
+	int root = sequence[r];
+
+	//二叉搜索树的后序遍历序列中 前一部分比根节点值小 后一部分比根节点值大
+	//找到第一个比根节点大的节点下标 则l~k-1是左子树 k~r-1是右子树
+	int k = l;
+	while (sequence[k] < root) k++;
+
+	//检查左子树是否合法
+	for (int i = l; i < k; i++) {
+		if (sequence[i] > root) return false;
+	}
+
+	//检查右子树是否合法
+	for (int i = k; i < r; i++) {
+		if (sequence[i] < root) return false;
+	}
+
+	//然后递归地在子区间进行检查
+	return process(sequence, l, k - 1) && process(sequence, k, r - 1);
+}
+
+bool verifySequenceOfBST(vector<int> sequence) {
+	return process(sequence, 0, sequence.size() - 1);
+}
+
+};
