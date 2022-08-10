@@ -1,0 +1,26 @@
+class Solution {
+public:
+    ListNode* deleteDuplication(ListNode* head) {
+        if(head == nullptr) return nullptr;
+        
+        //哨兵节点 可能存在删除头结点的情况
+        ListNode* dummy = new ListNode(-1);
+        dummy->next = head;
+        
+        ListNode* cur = dummy;
+        while(cur->next){
+            auto help = cur->next;
+            while(help && cur->next->val == help->val){
+                help = help->next;
+            }
+            
+            //区间长度为1 只有1个元素 cur向前移动一步
+            if(cur->next->next == help) cur = cur->next;
+            
+            //不需要更新cur 
+            else cur->next = help;
+        }
+        
+        return dummy->next;
+    }
+};
