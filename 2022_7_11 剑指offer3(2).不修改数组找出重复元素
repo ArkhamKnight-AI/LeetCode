@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int duplicateInArray(vector<int>& nums) {
+    int L = 1, R = nums.size() - 1;
+
+    //是在数上二分 而不是在数组上二分
+    while (L < R) {
+        int mid = (L + R) / 2;
+        //统计数组中数值在1~mid的个数
+        int count = 0;
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] <= mid && nums[i] >= L){
+                count++;
+            }
+        }
+
+        //说明多的数在1~mid区间里 缩短右区间
+        //不是>mid 应该是大于左侧区间中的元素个数
+        if (count > mid - L + 1) {
+            R = mid;
+        }
+        else {
+            L = mid + 1;
+        }
+    }
+    return R;
+}
+};
