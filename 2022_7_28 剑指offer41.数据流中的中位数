@@ -1,0 +1,44 @@
+class Solution {
+public:
+    //大根堆
+    priority_queue<int> maxHeap;
+    //小根堆
+    priority_queue<int, vector<int>, greater<int>> minHeap;
+
+    void insert(int num) {
+        if (maxHeap.empty()) {
+            maxHeap.push(num);
+        }
+
+        else {
+            if (num <= maxHeap.top()) {
+                maxHeap.push(num);
+            }
+            else {
+                minHeap.push(num);
+            }
+        }
+    }
+
+    double getMedian() {
+        //当大根堆比小根堆少2个元素时 就将小根堆堆顶元素弹出放入大根堆
+        if (maxHeap.size() == minHeap.size() - 2) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+
+        //当小根堆比大根堆少2个元素时 就将大根堆堆顶元素弹出放入小根堆
+        if (maxHeap.size() == minHeap.size() + 2) {
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+        }
+
+        //偶数个元素 返回平均值
+        if ((maxHeap.size() + minHeap.size()) % 2 == 0) {
+            return ((double)maxHeap.top() + (double)minHeap.top()) / 2;
+        }
+
+        //奇数个 返回元素多的那个堆的堆顶
+        return (maxHeap.size() > minHeap.size()) ? maxHeap.top() : minHeap.top();
+    }
+};
