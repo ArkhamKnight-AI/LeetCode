@@ -1,0 +1,40 @@
+class Solution {
+public:
+//判断i位数有多少个数的函数
+long long countOfIntegers(int digits) {
+	if (digits == 1) return 10;
+
+	return 9 * pow(10, digits - 1);
+}
+
+int digitAtIndex(int n) {
+	if (n < 10) return n % 10;
+	//1.首先确定第n位属于的那个数是几位数
+	//i表示当前是几位数 base表示i位数中最小的那个数 
+	long long i = 1, base = 1;
+	while (true) {
+		//i位数有多少个
+		long long number = countOfIntegers(i);
+		if (number * i > n) {
+			break;
+		}
+
+		n -= number * i;
+		i++;
+		base *= 10; //用于这个i位数是多少
+	}
+
+
+	//2.第n位数属于哪个数字
+	int res = base + n / i; //由于从第0位开始算 所以n属于第n / i这个数
+	int r = n % i; //余数是多少 0表示res的第0位 
+	
+	//3.求这个数字的第r位是什么是多少
+	for (int index = 0; index < i - r - 1; index++) {
+		res /= 10;
+	}
+
+	return res % 10;
+}
+
+};
