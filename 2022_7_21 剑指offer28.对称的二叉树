@@ -1,0 +1,17 @@
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root == nullptr) return true; //空节点时对称的
+        return process(root->left, root->right);
+    }
+    
+    bool process(TreeNode* l, TreeNode* r){
+        if(!l && !r) return true; //左右都空 返回true
+        
+        if(!l || !r) return false; //一侧空一侧不空 返回false
+        
+        if(l->val != r->val) return false; //左节点和右节点值不同 返回false;
+        
+        return process(l->left, r->right) && process(l->right, r->left); 
+    }
+};
