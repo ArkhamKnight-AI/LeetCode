@@ -1,0 +1,32 @@
+class Solution {
+public:
+    vector<int> getLeastNumbers_Solution(vector<int> input, int k) {
+	//用大根堆存放最小的k个数
+	priority_queue<int> q;
+	for (int i = 0; i < input.size(); i++) {
+		//小于k个直接插入大根堆
+		if (q.size() < k) {
+			q.push(input[i]);
+			continue;
+		}
+
+		//如果当前元素小于堆顶元素则弹出堆顶 并将当前元素插入
+		if (input[i] < q.top()) {
+			q.pop();
+			q.push(input[i]);
+		}
+		//否则啥都不做
+		else {
+			continue;
+		}
+	}
+
+	vector<int> res;
+	while (!q.empty()) {
+		res.push_back(q.top());
+		q.pop();
+	}
+
+	return vector<int>(res.rbegin(), res.rend());
+}
+};
