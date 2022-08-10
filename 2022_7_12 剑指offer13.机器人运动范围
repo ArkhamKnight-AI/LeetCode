@@ -1,0 +1,61 @@
+class Solution {
+public:
+    int get_single_sum(int x) {
+	int res = 0;
+	while (x) {
+		res += x % 10;
+		x /= 10;
+	}
+	return res;
+}
+
+int get_sum(pair<int, int>& q) {
+	return get_single_sum(q.first) + get_single_sum(q.second);
+}
+
+int movingCount(int threshold, int rows, int cols)
+{
+	if (threshold < 0 || rows <= 0 || cols <= 0) return 0;
+
+	//判断一个位置是否被遍历过
+	vector<vector<bool>> visited(rows, vector<bool>(cols));
+
+	//存储需要遍历的位置
+	queue<pair<int, int>> q;
+	//使用{}初始化的方式初始化pair 也可以使用make_pair方法
+	q.push({ 0, 0 });
+
+	//定义方向数组
+	vector<int> dr = { -1, 0, 1, 0 }, dc = { 0, 1, 0, -1 };
+
+	int res = 0;
+
+	while (!q.empty()) {
+		//取出队头元素后将其弹出
+		pair<int, int> t = q.front();
+		q.pop();
+
+		//判断t是否满足条件 如果已经访问过了或者大于threshold 直接跳过看下面的
+		if (get_sum(t) > threshold || visited[t.first][t.second]) continue;
+		
+		//标记为访问过  
+		visited[t.first][t.second] = true;
+
+
+		//否则res++
+		res++;
+
+		//然后遍历 将当前这个点上下左右四个点如果在范围内 加入q中
+		for (int i = 0; i < 4; i++) {
+			int a = t.first + dr[i];
+			int b = t.second + dc[i];
+
+			if (a < rows && a >= 0 && b < cols && b >= 0) {
+				q.push({ a, b });
+			}
+		}
+	}
+
+	return res;
+}
+};
