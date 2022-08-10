@@ -1,0 +1,38 @@
+注意：边界条件的控制！
+
+class Solution {
+public:
+    int strToInt(string str) {
+	if (str.size() == 0) return 0;
+	
+	int n = str.size();
+	int j = 0;
+
+	//删除头部空格
+	while (str[j] == ' ') j++;
+	str = str.substr(j, n - j);
+
+	int i = 0;
+	bool isNeg = str[0] == '-';
+	if (str[i] == '+' || str[i] == '-') i++;
+	
+	long long res = 0;
+
+	while (i <= n - 1 && str[i] >= '0' && str[i] <= '9') {
+		res = res * 10 + str[i] - '0';
+		i++;
+    
+    //这种时候判断是为了防止数值甚至比LONG_LONG_MAX还要大或者还要小的情况
+		if (res > INT_MAX && !isNeg) return INT_MAX;
+		if (res < INT_MIN && isNeg) return INT_MIN;
+	}
+
+	res = isNeg ? (-res) : res;
+  
+  //这种时候是判断这个数是不是超过了int表示的范围
+	if (res > INT_MAX && !isNeg) return INT_MAX;
+	if (res < INT_MIN && isNeg) return INT_MIN;
+	
+	return res;
+}
+};
