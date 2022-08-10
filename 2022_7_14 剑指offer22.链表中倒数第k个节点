@@ -1,0 +1,23 @@
+class Solution {
+public:
+    ListNode* findKthToTail(ListNode* pListHead, int k) {
+	if (pListHead == nullptr) return pListHead;
+	ListNode* slow = pListHead;
+	ListNode* fast = pListHead;
+
+	while (k && fast != nullptr) {
+		fast = fast->next;
+		k--;
+	}
+
+	if (k > 0 && fast == nullptr) {
+		return nullptr;
+	}
+
+	while (fast) {
+		fast = fast->next;
+		slow = slow->next;
+	}
+	return slow;
+}
+};
