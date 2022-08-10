@@ -1,0 +1,71 @@
+class Solution {
+public:
+//判断数字是否合法
+bool isNumber(string s) {
+	//删除首尾空格
+	int i = 0, j = s.size();
+	//删除头部空格
+	while (i <= j && s[i] == ' ') {
+		i++;
+	}
+	//删除尾部空格
+	while (i <= j && s[j] == ' ') {
+		j--;
+	}
+
+	//删完之后整个字符串就就没了 不合法
+	if (i > j) return false;
+
+	//更新为有效字符串
+	s = s.substr(i, j - i + 1);
+
+	//统计.和e的个数
+	int dot = 0;
+	int e = 0;
+
+	//如果队头元素为+/- 从第二位开始取 看字符串是否合法
+	if (s[0] == '+' || s[0] == '-') s = s.substr(1);
+
+	//删除+ - +. -.
+	if (s.empty() || s[0] == '.' && s.size() == 1) return false;
+
+	for (int i = 0; i < s.size(); i++) {
+		//合法操作 当前字符在1~9
+		if (s[i] >= '0' && s[i] <= '9') {
+			continue;
+		}
+		//当前字符为.
+		else if (s[i] == '.') {
+			dot++;
+			//e后面不能包含. 
+			//(1)e后面包含了.
+			//(2).出现了多次
+			if (dot > 1 || e) return false;
+		}
+
+		//当前字符为e或者E
+		else if (s[i] == 'e' || s[i] == 'E') {
+			e++;
+			//(1)e出现在了开头 结尾  E34532  4234E
+			//(2)e出现了不止一次 324E342E54
+			//(3)开头为.后面紧跟着E .E3  结尾为. 前面跟着E 在s[i]=='.'时已经讨论过了  E.
+			if (i == 0 || e > 1 || i == s.size() - 1 || s[i - 1] == '.' && i == 1) return false;
+
+			//(4)出现了正负号 但是某有跟数字
+			if (s[i + 1] == '+' || s[i + 1] == '-') {
+				if (i + 2 == s.size()) return false;
+			}
+		}
+		else if (s[i] == '+' || '-') {
+			if (s[i - 1] != 'E' && s[i - 1] != 'e') return false;
+		}
+
+		//出现了其他字符
+		else {
+			return false;
+		}
+	}
+
+	return true;
+}
+};
