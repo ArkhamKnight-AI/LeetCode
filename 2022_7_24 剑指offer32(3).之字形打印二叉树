@@ -1,0 +1,59 @@
+class Solution {
+public:
+    vector<vector<int>> printFromTopToBottom(TreeNode* root) {
+    if (!root) return {};
+    vector<vector<int>> res;
+
+    queue<TreeNode*> q;
+    q.push(root);
+
+    //本行还需要打印几个节点
+    int curLevelleft = 1;
+
+    //下一行有几个节点
+    int nextLevelNodes = 0;
+
+    //存放某一层的元素
+    vector<int> curLevel;
+
+    //控制打印顺序
+    bool fromLeftToRight = true;
+
+    while (!q.empty()) {
+        TreeNode* cur = q.front();
+        q.pop();
+        //改行需要打印的数量减少了一个
+        curLevelleft--;
+        //将这行的结果放入结果curLevel中
+        curLevel.push_back(cur->val);
+        //将左右孩子放入q中 并统计下一行节点数量
+        if (cur->left) {
+            q.push(cur->left);
+            nextLevelNodes++;
+        }
+        if (cur->right) {
+            q.push(cur->right);
+            nextLevelNodes++;
+        }
+
+
+        //如果当前层没有节点需要打印了 就将curLevelleft更新为nextLevelNodes 并将该行结果放入res中 并清空curLevel
+        if (!curLevelleft) {
+            if (fromLeftToRight) {
+                res.push_back(curLevel);
+            }
+            else {
+                res.push_back(vector<int>(curLevel.rbegin(), curLevel.rend()));
+            }
+            curLevelleft = nextLevelNodes;
+            curLevel.clear();
+            //要将nextLevelNodes重置为0
+            nextLevelNodes = 0;
+            //更新打印顺序
+            fromLeftToRight = !fromLeftToRight;
+        }
+    }
+
+    return res;
+}
+};
