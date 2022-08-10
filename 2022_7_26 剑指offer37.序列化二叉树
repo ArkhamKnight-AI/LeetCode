@@ -1,0 +1,75 @@
+class Solution {
+public:
+//分割字符串
+vector<string> splitString(string& str, char c) {
+	vector<string> res;
+	int j = 0;
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] == c) {
+			res.push_back(str.substr(j, i - j));
+			j = i + 1;
+		}
+	}
+	return res;
+}
+
+
+// Encodes a tree to a single string.
+void process1(TreeNode* root, string& res) {
+	if (root == nullptr) {
+		res += "#_";
+		return;
+	}
+
+	res += to_string(root->val) + "_";
+	process1(root->left, res);
+	process1(root->right, res);
+}
+string serialize(TreeNode* root) {
+	string res;
+	process1(root, res);
+	return res;
+}
+
+// Decodes your encoded data to tree.
+TreeNode* process2(queue<string>& q) {
+	string val = q.front();
+	q.pop();
+	if (val == "#") {
+		return nullptr;
+	}
+
+	int curvalue = 0;
+	if(val[0] == '-'){
+	    for(int i = 1; i < val.size(); i++){
+    	    curvalue = (val[i] - '0') + curvalue * 10;
+	    }
+	}
+	else{
+	    for(int i = 0; i < val.size(); i++){
+    	    curvalue = (val[i] - '0') + curvalue * 10;
+	    }
+	}
+	
+	if(val[0] == '-'){
+	    curvalue = -curvalue;
+	}
+	
+	
+	TreeNode* head = new TreeNode(curvalue);
+	head->left = process2(q);
+	head->right = process2(q);
+	return head;
+}
+
+TreeNode* deserialize(string data) {
+	vector<string> splitres = splitString(data, '_');
+	queue<string> q;
+	for (auto i : splitres) {
+		q.push(i);
+	}
+	
+	TreeNode* res = process2(q);
+	return res;
+}
+};
