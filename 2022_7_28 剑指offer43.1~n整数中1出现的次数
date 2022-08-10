@@ -1,0 +1,45 @@
+class Solution {
+public:
+   int numberOf1Between1AndN_Solution(int n) {
+	//存储下n的每一位
+	vector<int> num;
+	while (n) {
+		num.push_back(n % 10);
+		n /= 10;
+	}
+
+	int res = 0;
+
+	//枚举每一位为1的情况
+	for (int i = num.size() - 1; i >= 0; i--) {
+		//left表示当前位置左侧数字构成的的数 right表示当前位置右侧数字构成的数
+		auto left = 0, right = 0;
+
+		int t = 1; //记录右侧有多少位
+
+		//求出左侧的数是多大 为什么从num.size() - 1开始枚举? 因为最高位最后放进去 ab
+		for (int j = num.size() - 1; j > i; j--) {
+			left = num[j] + left * 10;
+		}
+
+		//求出左侧的数是多大 
+		for (int j = i - 1; j >= 0; j--) {
+			right = num[j] + right * 10;
+			t *= 10;
+		}
+
+		//第一种情况 最高位为0~ab-1 总能取到nums[i]=1
+		res += left * t;
+
+		//第二种情况 最高位为ab 现在看num[i]位置是否为1(判断是否能取到1, 比如如果是0, 并不能产生有效情结果)
+		if (num[i] == 1) {
+			res += right + 1;
+		}
+		else if(num[i] > 1){
+			res += t;
+		}
+	}
+
+	return res;
+}
+};
