@@ -1,0 +1,33 @@
+class Solution {
+public:
+   ListNode* copyRandomList(ListNode* head) {
+        if(!head) return nullptr;
+
+        ListNode* cur = head;
+        ListNode* next = nullptr;
+
+        while(cur){
+            next = cur->next;
+            ListNode* curCopy = new ListNode(cur->val);
+            curCopy->next = next;
+            cur->next = curCopy;
+            cur = next;
+        }
+
+        cur = head;
+        while(cur){
+            cur->next->random = cur->random == nullptr ? nullptr : cur->random->next;
+            cur = cur->next->next;
+        }
+
+        cur = head;
+        ListNode* res = head->next;
+        while(cur){
+            next = cur->next;
+            cur->next = next == nullptr ? nullptr : next->next;
+            cur = next;
+        }
+
+        return res;
+    }
+};
