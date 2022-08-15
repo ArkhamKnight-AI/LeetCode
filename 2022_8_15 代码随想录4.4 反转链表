@@ -1,0 +1,32 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+struct ListNode {
+	int val;
+	ListNode* next;
+	ListNode(int v) : val(v), next(nullptr) {}
+};
+
+ListNode* reverseList(ListNode* head) {
+	if (!head) return nullptr;
+
+	ListNode* pre = nullptr;
+
+	ListNode* cur = head;
+
+	while (cur) {
+		ListNode* next = cur->next;
+		cur->next = pre;
+		pre = cur;
+		cur = next;
+	}
+
+	return pre;
+}
+
+int main() {
+	
+	return 0;
+}
