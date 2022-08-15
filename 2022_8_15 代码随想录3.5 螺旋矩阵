@@ -1,0 +1,68 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+class Solution {
+public:
+	vector<int> res;
+	void processBorder(vector<vector<int>>& matrix, int row1, int col1, int row2, int col2) {
+		//只有一行了 把这一行放入
+		if (row1 == row2) {
+			for (int i = col1; i <= col2; i++) {
+				res.push_back(matrix[row1][i]);
+			}
+		}
+
+		//只有一列了 把这一列放入
+		else if (col1 == col2) {
+			for (int i = row1; i <= row2; i++) {
+				res.push_back(matrix[i][col1]);
+			}
+		}
+
+		//普遍情况
+		else {
+			int curRow = row1;
+			int curCol = col1;
+			//打印上方边界
+			for (; curCol < col2; curCol++) {
+				res.push_back(matrix[curRow][curCol]);
+			}
+
+			//打印左侧边界
+			for (; curRow < row2; curRow++) {
+				res.push_back(matrix[curRow][curCol]);
+			}
+
+			//打印上方边界
+			for (; curCol > col1; curCol--) {
+				res.push_back(matrix[curRow][curCol]);
+			}
+
+			//打印上方边界
+			for (; curRow > row1; curRow--) {
+				res.push_back(matrix[curRow][curCol]);
+			}
+		}
+	}
+
+	vector<int> spiralOrder(vector<vector<int>>& matrix) {
+		//(row1, col1)是左上角点 (row2, col2)是右下角点
+		int row1 = 0, col1 = 0, row2 = matrix.size() - 1, col2 = matrix[0].size() - 1;
+
+		while (row1 <= row2 && col1 <= col2) {
+			processBorder(matrix, row1++, col1++, row2--, col2--);
+		}
+
+		return res;
+	}
+};
+
+int main() {
+	vector<vector<int>> matrix = { {1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12} };
+	Solution s;
+	vector<int> res = s.spiralOrder(matrix);
+	cout << "hello" << endl;
+	return 0;
+}
