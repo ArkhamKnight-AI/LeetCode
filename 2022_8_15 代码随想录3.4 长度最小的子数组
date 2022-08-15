@@ -1,0 +1,33 @@
+用双指针减去一个for循环的代价
+
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+
+int minSubArrayLen(int target, vector<int>& nums) {
+	int slow = 0;
+	int fast = 0;
+
+	int sum = 0;
+	int res = INT_MAX;
+
+	
+
+	for (; fast < nums.size(); fast++) {
+		sum += nums[fast];
+
+		while (sum >= target) {
+			int subLength = fast - slow + 1;
+			res = min(res, subLength);
+			sum -= nums[slow++];
+		}
+	}
+
+	return res == INT_MAX ? 0 : res;
+}
+
+int main() {
+	
+	return 0;
+}
