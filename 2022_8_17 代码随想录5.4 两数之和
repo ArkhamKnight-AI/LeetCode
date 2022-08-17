@@ -1,0 +1,16 @@
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+	multimap<int, int> map; //first->下标second位置上的数需要组成target还需要多少 second->元素下标
+
+	for (int i = 0; i < nums.size(); i++) {
+		map.emplace(target - nums[i], i);
+
+		for (auto item : map) {
+			if (nums[i] == item.first && item.second != i) return { item.second, i };
+		}
+	}
+
+	return {};
+}
+};
