@@ -1,0 +1,44 @@
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+    sort(nums.begin(), nums.end());
+	vector<vector<int>> res;
+
+	for (int i = 0; i < nums.size(); i++) {
+		//一级剪枝 给a剪枝
+		if (nums[i] > target && nums[i] >= 0) break;
+
+		//给a去重
+		if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+		for (int j = i + 1; j < nums.size(); j++) {
+			//二级剪枝 对a和b整体剪枝
+			if (nums[i] + nums[j] > target && nums[i] + nums[j] >= 0) break;
+
+			//给b去重
+			if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+
+			int left = j + 1, right = nums.size() - 1;
+
+			while (left < right) {
+				if ((long)nums[i] + nums[j] + nums[left] + nums[right] > target) right--;
+
+				else if ((long)nums[i] + nums[j] + nums[left] + nums[right] < target) left++;
+
+				else {
+					res.push_back({ nums[i], nums[j], nums[left], nums[right] });
+
+					//给c和d去重
+					while (left < right && nums[left] == nums[left + 1]) left++;
+					while (left < right && nums[right] == nums[right - 1]) right--;
+
+					//left和right向中间压缩
+					left++;
+					right--;
+				}
+			}
+		}
+	}
+	return res;
+}
+};
