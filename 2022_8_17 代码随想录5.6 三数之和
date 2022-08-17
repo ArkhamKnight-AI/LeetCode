@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+	sort(nums.begin(), nums.end());
+	vector<vector<int>> res;
+
+	if (nums[0] > 0 || nums.size() < 1) return res;
+
+	for (int i = 0; i < nums.size(); i++) {
+		if (nums[i] > 0) return res;
+
+		//a元素去重
+		if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+		int left = i + 1, right = nums.size() - 1;
+
+		//不能取=，因为right==left时只有两个元素
+		while (right > left) {
+			//如果三数相加大于0 说明结果大了 向左移动right
+			if (nums[i] + nums[left] + nums[right] > 0) right--;
+
+			//如果三数相加大于0 说明结果小了 向右移动left
+			else if (nums[i] + nums[left] + nums[right] < 0) left++;
+
+			//找到了一组解
+			else {
+				res.push_back({ nums[i], nums[left], nums[right] });
+
+                //b和c去重
+			    while (right > left && nums[left] == nums[left + 1]) left++;
+			    while (right > left && nums[right] == nums[right - 1]) right--;
+
+                left++;
+                right--;
+			}
+
+			
+		}
+	}
+
+	return res;
+}
+};
