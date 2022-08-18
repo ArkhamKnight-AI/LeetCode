@@ -1,0 +1,43 @@
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+//非递归写法
+vector<int> preorderTraversal(TreeNode* root) {
+	if (!root) return {};
+	vector<int> res;
+	stack<TreeNode*> s;
+
+	s.push(root);
+	
+	while (!s.empty()) {
+		TreeNode* cur = s.top();
+		s.pop();
+		res.push_back(cur->val);
+
+		if(cur->right) s.push(cur->right);
+		if(cur->left) s.push(cur->left);
+	}
+
+	return res;
+}
+
+//递归写法
+vector<int> preorderTraversal(TreeNode* root) {
+	if (root == nullptr) return {};
+	
+	vector<int> res;
+	process(res, root);
+	return res;
+}
+
+void process(vector<int>& res, TreeNode* root) {
+	if (root == nullptr) return;
+
+	res.push_back(root->val);
+	process(res, root->left);
+	process(res, root->right);
+}
