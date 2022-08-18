@@ -1,0 +1,14 @@
+//链表
+struct ListNode {
+	int val;
+	ListNode* next;
+	ListNode(int v) : val(v), next(nullptr) {}
+};
+
+//树
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
