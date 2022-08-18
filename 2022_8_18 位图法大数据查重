@@ -1,0 +1,32 @@
+#include<iostream>
+#include<time.h>
+#include<vector>
+#include<algorithm>
+using namespace std;
+
+
+int main() {
+	vector<int> vec = { 12, 78, 90, 123, 8, 9, 12 };
+	int maxVal = vec[0];
+	for (auto i : vec) {
+		maxVal = max(maxVal, i);
+	}
+
+	int* bitmap = new int[maxVal / 32 + 1](); //()全部初始化为0
+	unique_ptr<int> ptr(bitmap); //方便自动释放资源
+
+	//找回第一个重复出现的数字
+	for (auto i : vec) {
+		int index = i / 32;
+		int offset = i % 32;
+
+		//如果对应位置的值为0 说明这个数没有出现过 设置为1
+		if (((1 << offset) & bitmap[index]) == 0) bitmap[index] |= (1 << offset);
+
+		//否则输出这个数出现过
+		else {
+			cout << i << "出现过！" << endl;
+		}
+	}
+	return 0;
+}
