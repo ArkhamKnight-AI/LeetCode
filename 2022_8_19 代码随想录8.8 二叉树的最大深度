@@ -1,0 +1,21 @@
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+int process(TreeNode* root) {
+	if (!root) return 0;
+
+	int leftHeight = process(root->left);
+
+	int rightHeight = process(root->right);
+
+	return max(leftHeight, rightHeight) + 1;
+}
+
+int maxDepth(TreeNode* root) {
+	return process(root);
+}
+
