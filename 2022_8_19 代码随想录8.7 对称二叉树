@@ -1,0 +1,38 @@
+//后序遍历递归写法
+bool isSymmetric(TreeNode* root) {
+        if(root==nullptr)return true;
+        return dfs(root->left,root->right);
+    }
+bool dfs(TreeNode*left,TreeNode*right){
+    if(left==nullptr&&right==nullptr)return true;
+    else if(left!=nullptr&&right==nullptr)return false;
+    else if(left==nullptr&&right!=nullptr)return false;
+    else if(left->val!=right->val)return false;
+    return dfs(left->left,right->right)&&dfs(left->right,right->left);
+}
+
+//后序遍历非递归写法
+bool isSymmetric(TreeNode* root) {
+	if (!root) return true;
+
+	queue<TreeNode*> q;
+
+	q.push(root->left);
+	q.push(root->right);
+
+	while (!q.empty()) {
+		TreeNode* left = q.front(); q.pop();
+		TreeNode* right = q.front(); q.pop();
+
+		if (!left && !right) continue;
+
+		if (!left || !right || left->val != right->val) return false;
+
+		if (left) q.push(left->left);
+		if (right) q.push(right->right);
+		if (left) q.push(left->right);
+		if (right) q.push(right->left);
+	}
+
+	return true;
+}
