@@ -1,0 +1,13 @@
+//除了中序遍历不可以 其他遍历方式都可以
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+	if (root == nullptr) return root;
+
+	swap(root->left, root->right);
+	invertTree(root->left);
+	invertTree(root->right);
+
+    return root;
+}
+};
