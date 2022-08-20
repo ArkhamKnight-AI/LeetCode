@@ -1,0 +1,44 @@
+// 树形DP做法
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+pair<bool, int> process(TreeNode* root) {
+	if (root == nullptr) return { true, 0 };
+
+	auto leftInfo = process(root->left);
+	auto rightInfo = process(root->right);
+
+	bool isBalanced = true;
+	int height = max(leftInfo.second, rightInfo.second) + 1;
+
+	if (!leftInfo.first || !rightInfo.first || abs(leftInfo.second - rightInfo.second) > 1) isBalanced = false;
+
+	return { isBalanced, height };
+}
+
+bool isBalanced(TreeNode* root) {
+	return process(root).first;
+}
+
+//代码随想录方法
+int process(TreeNode* root) {
+	if (!root) return 0;
+
+	if (process(root->left) == -1) return -1;
+
+	if (process(root->right) == -1) return -1;
+
+	int leftInfo = process(root->left);
+
+	int rightInfo = process(root->right);
+
+	return (abs(leftInfo - rightInfo) > 1 ? -1 : max(leftInfo, rightInfo) + 1);
+}
+
+bool isBalanced(TreeNode* root) {
+	return process(root) == -1 ? false : true;
+}
