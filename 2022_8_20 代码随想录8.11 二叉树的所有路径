@@ -1,0 +1,42 @@
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+void process(vector<string>& res, vector<int>& path, TreeNode* cur) {
+	//来到了叶子节点 把路径上的结果放入res中
+	path.push_back(cur->val);
+	if (cur->left && cur->right) {
+		string curres;
+		for (int i = 0; i < path.size() - 1; i++) {
+			curres += to_string(path[i]);
+			curres += "->";
+		}
+
+		curres += path[path.size() - 1];
+		res.push_back(curres);
+	}
+
+	if (cur->left) {
+		process(res, path, cur->left);
+		path.pop_back();
+	}
+
+	if (cur->right) {
+		process(res, path, cur->right);
+		path.pop_back();
+	}
+}
+
+vector<string> binaryTreePaths(TreeNode* root) {
+	vector<string> res;
+	if (!root) return res;
+
+	vector<int> path; //存储路径上的节点
+	
+	process(res, path, root);
+
+	return res;
+}
