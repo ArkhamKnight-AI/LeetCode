@@ -1,0 +1,52 @@
+struct Point{
+	int x;
+	int y;
+	Point(int xx, int yy) : x(xx), y(yy) {}
+};
+
+void process(vector<vector<int>>& maze, vector<Point>& res, Point cur) {
+	if (cur.x >= maze.size() || cur.y >= maze[0].size() || maze[cur.x][cur.y] == 1) return;
+	if (maze[cur.x][cur.y] == 8) return;
+
+	if (maze[cur.x][cur.y] != 1) res.push_back(cur);
+
+	process(maze, res, Point(cur.x + 1, cur.y));
+	res.pop_back();
+	process(maze, res, Point(cur.x - 1, cur.y));
+	res.pop_back();
+	process(maze, res, Point(cur.x, cur.y + 1));
+	res.pop_back();
+	process(maze, res, Point(cur.x, cur.y - 1));
+	res.pop_back();
+}
+
+vector<Point> winMazeGift(vector<vector<int>>& maze) {
+	//首先找到所有入口
+	vector<Point> Entry;
+	for (int i = 0; i < maze.size(); i++) {
+		if (maze[i][0] == 0) Entry.push_back(Point(i, 0));
+	}
+
+	for (int i = 0; i < maze.size(); i++) {
+		if (maze[i][maze.size() - 1] == 0) Entry.push_back(Point(i, maze.size() - 1));
+	}
+
+	for (int i = 1; i < maze[0].size(); i++) {
+		if (maze[0][i] == 0) Entry.push_back(Point(0, i));
+	}
+
+	for (int i = 1; i < maze[0].size(); i++) {
+		if (maze[maze[0].size() - 1][i] == 0) Entry.push_back(Point(maze.size() - 1, i));
+	}
+
+	vector<Point> res;
+	vector<Point> finalres;
+
+	for (auto i : Entry) {
+		process(maze, res, i);
+		if (res.size() < finalres.size()) finalres = res;
+		res.clear();
+	}
+	
+	return finalres;
+}
