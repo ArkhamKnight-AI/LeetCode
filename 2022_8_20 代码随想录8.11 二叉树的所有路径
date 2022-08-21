@@ -5,6 +5,7 @@ struct TreeNode {
 	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
 };
 
+//递归写法
 void process(vector<string>& res, vector<int>& path, TreeNode* cur) {
 	//来到了叶子节点 把路径上的结果放入res中
 	path.push_back(cur->val);
@@ -37,6 +38,39 @@ vector<string> binaryTreePaths(TreeNode* root) {
 	vector<int> path; //存储路径上的节点
 
 	process(res, path, root);
+
+	return res;
+}
+
+//非递归写法
+vector<string> binaryTreePaths(TreeNode* root) {
+	vector<string> res;
+	if (!root) return res;
+
+	stack<TreeNode*> nodes; //存放节点的栈
+	stack<string> strings; //存放字符串的栈
+
+	nodes.push(root);
+	strings.push(to_string(root->val));
+
+	while (!nodes.empty()) {
+		TreeNode* cur = nodes.top(); nodes.pop();
+		string curstr = strings.top(); strings.pop();
+
+		if (!cur->left && !cur->right) {
+			res.push_back(curstr);
+		}
+
+		if (cur->left) {
+			nodes.push(cur->left);
+			strings.push(curstr + "->" + to_string(cur->left->val));
+		}
+
+		if (cur->right) {
+			nodes.push(cur->right);
+			strings.push(curstr + "->" + to_string(cur->right->val));
+		}
+	}
 
 	return res;
 }
