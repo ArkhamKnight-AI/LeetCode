@@ -1,0 +1,31 @@
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+vector<double> averageOfLevels(TreeNode* root) {
+	if (!root) return {};
+
+	queue<TreeNode*> q;
+	q.push(root);
+	vector<double> res;
+
+	while (!q.empty()) {
+		int size = q.size();
+		double sum = 0;
+
+		for (int i = 0; i < size; i++) {
+			TreeNode* cur = q.front(); q.pop();
+			if (cur->left) q.push(cur->left);
+			if (cur->right) q.push(cur->right);
+			sum += cur->val;
+		}
+
+		double curres = (sum * 1.0) / size;
+		res.push_back(curres);
+	}
+
+	return res;
+}
