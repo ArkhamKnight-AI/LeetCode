@@ -1,0 +1,35 @@
+//本题使用了双重递归
+
+struct TreeNode {
+	int val;
+	TreeNode* left;
+	TreeNode* right;
+	TreeNode(int v) : val(v), left(nullptr), right(nullptr) {}
+};
+
+int process(TreeNode* root, long rest) {
+	if (!root) return 0;
+
+	long res = 0;
+
+	if (root->val == rest) res++;
+
+	res += process(root->left, rest - root->val);
+	res += process(root->right, rest - root->val);
+
+	return res;
+}
+
+//双重递归
+int pathSum(TreeNode* root, int targetSum) {
+	if (!root) return 0;
+
+	int res = process(root, targetSum);
+
+	//看作以root->left和root->right为头的两棵子树分别进行递归 
+	//求以root->left和root->right为头的子树路径和为targetSum的情况 
+	res += pathSum(root->left, targetSum);
+	res += pathSum(root->right, targetSum);
+
+	return res;
+}
