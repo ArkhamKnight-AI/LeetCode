@@ -1,0 +1,38 @@
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode() : val(0), left(nullptr), right(nullptr) {}
+	TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+TreeNode* process(vector<int>& preorder, vector<int>& inorder, int prel, int prer, int inl, int inr) {
+	if (prel > prer) return nullptr;
+	if (prel == prer) return new TreeNode(preorder[prel]);
+
+	int curval = preorder[prel];
+	TreeNode* node = new TreeNode(curval);
+
+	int k = 0;
+	for (int i = 0; i < inorder.size(); i++) {
+		if (inorder[i] == curval) {
+			k = i;
+			break;
+		}
+	}
+
+	//中序数组中左树起止位置：(inl, k - 1) 右树起止位置：(k + 1, inr) 左子树规模为k - inl
+	//前序数组中左树起止位置：(prel + 1, prel + k - inl) 右树起止位置：(prel + k - inl + 1, prer)
+	TreeNode* left = process(preorder, inorder, prel + 1, prel + k - inl, inl, k - 1);
+	TreeNode* right = process(preorder, inorder, prel + k - inl + 1, prer, k + 1, inr);
+	node->left = left;
+	node->right = right;
+
+	return node;
+}
+
+TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+	if (preorder.size() < 1) return nullptr;
+	return process(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+}
