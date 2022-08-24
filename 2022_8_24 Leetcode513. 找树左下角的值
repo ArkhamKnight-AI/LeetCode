@@ -1,0 +1,51 @@
+//递归写法 为什么能确保最终的结果一定是最左侧的数？
+//因为每次遍历都是先更新left的值 再更新right的值 除非right的深度更深maxLeftValue才会更新为right的值
+class Solution {
+public:
+	int maxLen = INT_MIN; //最大深度
+	int maxLeftValue; //最大深度对应的值
+
+	void process(TreeNode* root, int curLen) {
+		if (!root->left && !root->right) {
+			if (curLen > maxLen) {
+				maxLen = curLen;
+				maxLeftValue = root->val;
+			}
+			return;
+		}
+
+		if (root->left) {
+			process(root, curLen + 1);
+		}
+
+		if (root->right) {
+			process(root, curLen + 1);
+		}
+	}
+
+	int findBottomLeftValue(TreeNode* root) {
+		process(root, 0);
+		return maxLeftValue;
+	}
+};
+
+//非递归写法
+int findBottomLeftValue(TreeNode* root) {
+	if (!root) return 0;
+
+	queue<TreeNode*> q;
+	q.push(root);
+	int res = 0;
+	
+	while (!q.empty()) {
+		int size = q.size();
+		for (int i = 0; i < size; i++) {
+			TreeNode* cur = q.front(); q.pop();
+			if (cur->left) q.push(cur->left);
+			if (cur->right) q.push(cur->right);
+			if (i == 0) res = cur->val;
+		}
+	}
+
+	return res;
+}
