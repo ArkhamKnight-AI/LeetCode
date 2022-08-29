@@ -7,7 +7,7 @@ struct TreeNode {
 	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
-
+//转化为数组
 class Solution {
 public:
 	vector<int> res;
@@ -27,5 +27,24 @@ public:
 		process(root->left);
 		res.push_back(root->val);
 		process(root->right);
+	}
+};
+
+//不用转化为数组
+class Solution {
+public:
+	TreeNode* pre;
+	bool isValidBST(TreeNode* root) {
+        if(!root) return true;
+
+        bool left = isValidBST(root->left);
+
+        if(pre && root->val <= pre->val) return false;
+
+        pre = root;
+
+        bool right = isValidBST(root->right);
+
+        return left && right;
 	}
 };
