@@ -1,0 +1,31 @@
+struct TreeNode {
+	int val;
+	TreeNode *left;
+	TreeNode *right;
+	TreeNode() : val(0), left(nullptr), right(nullptr) {}
+	TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+	TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+TreeNode* process(TreeNode* root, TreeNode* p, TreeNode* q) {
+	if (!root) return root;
+
+	//大于给定的两个节点的值 则应该在其左树继续寻找
+	if (root->val > p->val && root->val > q->val) {
+		TreeNode* left = process(root->left, p, q);
+		if (left) return left;
+	}
+
+	//小于给定的两个节点的值 则应该在其右树继续寻找
+	if (root->val < p->val && root->val < q->val) {
+		TreeNode* right = process(root->right, p, q);
+		if (right) return right;
+	}
+
+	//否则则是一个大于 一个小于的情况 此时直接返回cur即可
+	return root;
+}
+
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+	return process(root, p, q);
+}
